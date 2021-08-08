@@ -1,0 +1,2731 @@
+.mediaViewInfo {
+    --web-view-name: Web 1920 – 28;
+    --web-view-id: Web_1920__28;
+    --web-scale-on-resize: true;
+    --web-enable-deep-linking: true;
+}
+
+:root {
+    --web-view-ids: Web_1920__28;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    border: none;
+}
+
+#ventana {
+      zoom: 77%;
+    
+}
+
+#Web_1920__28 {
+    position: absolute;
+    width: 1920px;
+    height: 12823px;
+    background-color: rgba(241, 227, 227, 1);
+    overflow: hidden;
+    --web-view-name: Web 1920 – 28;
+    --web-view-id: Web_1920__28;
+    --web-scale-on-resize: true;
+    --web-enable-deep-linking: true;
+}
+
+#CIW_R {
+    display: none;
+    position: absolute;
+    width: 131px;
+    height: 48px;
+    left: 1172px;
+    top: 2528px;
+    overflow: visible;
+}
+
+#adobe-logo {
+    display: none;
+    position: absolute;
+    width: 203px;
+    height: 61px;
+    left: 1172px;
+    top: 2597px;
+    overflow: visible;
+}
+
+#bg {
+    fill: rgba(250, 250, 250, 1);
+}
+
+.bg {
+    position: absolute;
+    overflow: visible;
+    width: 1920.069px;
+    height: 2007.947px;
+    left: 0px;
+    top: 6745px;
+}
+
+#Rectngulo_71 {
+    fill: rgba(250, 250, 250, 1);
+}
+
+.Rectngulo_71 {
+    position: absolute;
+    overflow: visible;
+    width: 1920px;
+    height: 1535px;
+    left: 0px;
+    top: 780px;
+}
+
+#Rectngulo_131 {
+    fill: rgba(17, 17, 17, 1);
+}
+
+.Rectngulo_131 {
+    position: absolute;
+    overflow: visible;
+    width: 1920px;
+    height: 780px;
+    left: -7px;
+    top: 0px;
+}
+
+#Grupo_923 {
+    position: absolute;
+    width: 1415px;
+    height: 130px;
+    left: 230px;
+    top: 0px;
+    overflow: visible;
+}
+
+#Codigo_de_Etica_del_Ingeniero {
+    left: 1147px;
+    top: 24.5px;
+    position: absolute;
+    overflow: visible;
+    width: 249px;
+    white-space: nowrap;
+    text-align: center;
+    font-family: dana;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 19px;
+    color: rgba(255, 255, 255, 1);
+    cursor: pointer;
+}
+
+#COPNIA {
+    left: 1029px;
+    top: 24.5px;
+    position: absolute;
+    overflow: visible;
+    width: 69px;
+    white-space: nowrap;
+    text-align: left;
+    font-family: dana;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 19px;
+    color: rgba(255, 255, 255, 1);
+    cursor: pointer;
+}
+
+#Derechos_Colectivos {
+    left: 674px;
+    top: 24.5px;
+    position: absolute;
+    overflow: visible;
+    width: 170px;
+    white-space: nowrap;
+    text-align: left;
+    font-family: dana;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 19px;
+    color: rgba(255, 255, 255, 1);
+    cursor: pointer;
+}
+
+#Ley_1273 {
+    left: 897px;
+    top: 24.5px;
+    position: absolute;
+    overflow: visible;
+    width: 75px;
+    white-space: nowrap;
+    text-align: left;
+    font-family: dana;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 19px;
+    color: rgba(255, 255, 255, 1);
+    cursor: pointer;
+}
+
+#baba {
+    left: 667px;
+    top: 24.5px;
+    position: absolute;
+    overflow: visible;
+    width: 75px;
+}
+
+#Rectngulo_133 {
+    opacity: 0.1;
+    fill: rgba(255, 255, 255, 1);
+}
+
+.Rectngulo_133 {
+    position: absolute;
+    overflow: visible;
+    width: 150.65px;
+    height: 51.786px;
+    left: 1264.35px;
+    top: 37.021px;
+}
+
+#Mas_info {
+    left: 1301.175px;
+    top: 49.913px;
+    position: absolute;
+    overflow: visible;
+    width: 78px;
+    white-space: nowrap;
+    text-align: right;
+    font-family: Product Sans;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 19px;
+    color: rgba(255, 255, 255, 1);
+    cursor: pointer;
+}
+
+#Derechos_Humanos {
+    left: 468px;
+    top: 24.5px;
+    position: absolute;
+    overflow: visible;
+    width: 165px;
+    white-space: nowrap;
+    text-align: left;
+    font-family: dana;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 19px;
+    color: rgba(255, 255, 255, 1);
+    cursor: pointer;
+}
+
+#Imagen_1 {
+    position: absolute;
+    width: 200px;
+    height: 75px;
+    left: 0px;
+    top: 0px;
+    overflow: visible;
+}
+
+#_2021_-_Universidad_De_Cundina {
+    left: 0px;
+    top: 104px;
+    position: absolute;
+    overflow: visible;
+    width: 335px;
+    white-space: nowrap;
+    text-align: center;
+    font-family: dana;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 19px;
+    color: rgba(255, 255, 255, 1);
+}
+
+#Grupo_914 {
+    position: absolute;
+    width: 1910px;
+    height: 1713px;
+    left: 18px;
+    top: 1055px;
+    overflow: visible;
+}
+
+#Rectngulo_134 {
+    fill: rgba(255, 255, 255, 1);
+}
+
+.Rectngulo_134 {
+    filter: drop-shadow(50px 50px 99px rgba(65, 65, 65, 0.059));
+    position: absolute;
+    overflow: visible;
+    width: 1757px;
+    height: 1813px;
+    left: 0px;
+    top: 0px;
+}
+
+#Aqu__encontraras_de_forma_resu {
+    left: 1268px;
+    top: 642px;
+    position: absolute;
+    overflow: visible;
+    width: 405px;
+    height: 232px;
+    line-height: 50px;
+    margin-top: -12px;
+    text-align: center;
+    font-family: Product Sans;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 26px;
+    color: rgba(0, 0, 0, 1);
+}
+
+#Imagen_4 {
+    position: absolute;
+    width: 818px;
+    height: 622px;
+    left: 257px;
+    top: 642px;
+    overflow: visible;
+}
+
+#Ley_1273_z {
+    left: 1332px;
+    top: 402px;
+    position: absolute;
+    overflow: visible;
+    width: 277px;
+    white-space: nowrap;
+    text-align: center;
+    font-family: Lucida Fax;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 60px;
+    color: rgba(0, 0, 0, 1);
+}
+
+#Cuadrcula_de_repeticin_2 {
+    position: absolute;
+    width: 827px;
+    height: 1340px;
+    left: 1083px;
+    top: 33px;
+    overflow: hidden;
+}
+
+#Cuadrcula_de_repeticin_2_0 {
+    position: absolute;
+    width: 177px;
+    height: 423px;
+    left: 0px;
+    top: 12px;
+    overflow: visible;
+}
+
+#Grupo_de_desplazamiento_1 {
+    mix-blend-mode: normal;
+    transform: translate(-1290px, -1173px) matrix(1, 0, 0, 1, 1167, 1296) rotate(90deg);
+    transform-origin: center;
+    position: absolute;
+    width: 423px;
+    height: 177px;
+    left: 0px;
+    top: 0px;
+    overflow: hidden;
+}
+
+#GLOBEX {
+    opacity: 0.05;
+    left: -3px;
+    top: -17px;
+    position: absolute;
+    overflow: visible;
+    width: 458px;
+    white-space: nowrap;
+    text-align: left;
+    font-family: Product Sans;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 120px;
+    color: rgba(0, 0, 0, 1);
+}
+
+#Cuadrcula_de_repeticin_2_1 {
+    position: absolute;
+    width: 177px;
+    height: 423px;
+    left: 191px;
+    top: 12px;
+    overflow: visible;
+}
+
+#Grupo_de_desplazamiento_1_ {
+    mix-blend-mode: normal;
+    transform: translate(-1290px, -1173px) matrix(1, 0, 0, 1, 1167, 1296) rotate(90deg);
+    transform-origin: center;
+    position: absolute;
+    width: 423px;
+    height: 177px;
+    left: 0px;
+    top: 0px;
+    overflow: hidden;
+}
+
+#GLOBEX_ {
+    opacity: 0.05;
+    left: -3px;
+    top: -17px;
+    position: absolute;
+    overflow: visible;
+    width: 458px;
+    white-space: nowrap;
+    text-align: left;
+    font-family: Product Sans;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 120px;
+    color: rgba(0, 0, 0, 1);
+}
+
+#Cuadrcula_de_repeticin_2_2 {
+    position: absolute;
+    width: 177px;
+    height: 423px;
+    left: 382px;
+    top: 12px;
+    overflow: visible;
+}
+
+#Grupo_de_desplazamiento_1_ba {
+    mix-blend-mode: normal;
+    transform: translate(-1290px, -1173px) matrix(1, 0, 0, 1, 1167, 1296) rotate(90deg);
+    transform-origin: center;
+    position: absolute;
+    width: 423px;
+    height: 177px;
+    left: 0px;
+    top: 0px;
+    overflow: hidden;
+}
+
+#GLOBEX_ba {
+    opacity: 0.05;
+    left: -3px;
+    top: -17px;
+    position: absolute;
+    overflow: visible;
+    width: 458px;
+    white-space: nowrap;
+    text-align: left;
+    font-family: Product Sans;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 120px;
+    color: rgba(0, 0, 0, 1);
+}
+
+#Cuadrcula_de_repeticin_2_3 {
+    position: absolute;
+    width: 177px;
+    height: 423px;
+    left: 573px;
+    top: 12px;
+    overflow: visible;
+}
+
+#Grupo_de_desplazamiento_1_bb {
+    mix-blend-mode: normal;
+    transform: translate(-1290px, -1173px) matrix(1, 0, 0, 1, 1167, 1296) rotate(90deg);
+    transform-origin: center;
+    position: absolute;
+    width: 423px;
+    height: 177px;
+    left: 0px;
+    top: 0px;
+    overflow: hidden;
+}
+
+#GLOBEX_bc {
+    opacity: 0.05;
+    left: -3px;
+    top: -17px;
+    position: absolute;
+    overflow: visible;
+    width: 458px;
+    white-space: nowrap;
+    text-align: left;
+    font-family: Product Sans;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 120px;
+    color: rgba(0, 0, 0, 1);
+}
+
+#Cuadrcula_de_repeticin_2_4 {
+    position: absolute;
+    width: 177px;
+    height: 423px;
+    left: 764px;
+    top: 12px;
+    overflow: visible;
+}
+
+#Grupo_de_desplazamiento_1_be {
+    mix-blend-mode: normal;
+    transform: translate(-1290px, -1173px) matrix(1, 0, 0, 1, 1167, 1296) rotate(90deg);
+    transform-origin: center;
+    position: absolute;
+    width: 423px;
+    height: 177px;
+    left: 0px;
+    top: 0px;
+    overflow: hidden;
+}
+
+#GLOBEX_bf {
+    opacity: 0.05;
+    left: -3px;
+    top: -17px;
+    position: absolute;
+    overflow: visible;
+    width: 458px;
+    white-space: nowrap;
+    text-align: left;
+    font-family: Product Sans;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 120px;
+    color: rgba(0, 0, 0, 1);
+}
+
+#Cuadrcula_de_repeticin_2_5 {
+    position: absolute;
+    width: 177px;
+    height: 423px;
+    left: 0px;
+    top: 455px;
+    overflow: visible;
+}
+
+#Grupo_de_desplazamiento_1_bh {
+    mix-blend-mode: normal;
+    transform: translate(-1290px, -1173px) matrix(1, 0, 0, 1, 1167, 1296) rotate(90deg);
+    transform-origin: center;
+    position: absolute;
+    width: 423px;
+    height: 177px;
+    left: 0px;
+    top: 0px;
+    overflow: hidden;
+}
+
+#GLOBEX_bi {
+    opacity: 0.05;
+    left: -3px;
+    top: -17px;
+    position: absolute;
+    overflow: visible;
+    width: 458px;
+    white-space: nowrap;
+    text-align: left;
+    font-family: Product Sans;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 120px;
+    color: rgba(0, 0, 0, 1);
+}
+
+#Cuadrcula_de_repeticin_2_6 {
+    position: absolute;
+    width: 177px;
+    height: 423px;
+    left: 191px;
+    top: 455px;
+    overflow: visible;
+}
+
+#Grupo_de_desplazamiento_1_bk {
+    mix-blend-mode: normal;
+    transform: translate(-1290px, -1173px) matrix(1, 0, 0, 1, 1167, 1296) rotate(90deg);
+    transform-origin: center;
+    position: absolute;
+    width: 423px;
+    height: 177px;
+    left: 0px;
+    top: 0px;
+    overflow: hidden;
+}
+
+#GLOBEX_bl {
+    opacity: 0.05;
+    left: -3px;
+    top: -17px;
+    position: absolute;
+    overflow: visible;
+    width: 458px;
+    white-space: nowrap;
+    text-align: left;
+    font-family: Product Sans;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 120px;
+    color: rgba(0, 0, 0, 1);
+}
+
+#Cuadrcula_de_repeticin_2_7 {
+    position: absolute;
+    width: 177px;
+    height: 423px;
+    left: 382px;
+    top: 455px;
+    overflow: visible;
+}
+
+#Grupo_de_desplazamiento_1_bn {
+    mix-blend-mode: normal;
+    transform: translate(-1290px, -1173px) matrix(1, 0, 0, 1, 1167, 1296) rotate(90deg);
+    transform-origin: center;
+    position: absolute;
+    width: 423px;
+    height: 177px;
+    left: 0px;
+    top: 0px;
+    overflow: hidden;
+}
+
+#GLOBEX_bo {
+    opacity: 0.05;
+    left: -3px;
+    top: -17px;
+    position: absolute;
+    overflow: visible;
+    width: 458px;
+    white-space: nowrap;
+    text-align: left;
+    font-family: Product Sans;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 120px;
+    color: rgba(0, 0, 0, 1);
+}
+
+#Cuadrcula_de_repeticin_2_8 {
+    position: absolute;
+    width: 177px;
+    height: 423px;
+    left: 573px;
+    top: 455px;
+    overflow: visible;
+}
+
+#Grupo_de_desplazamiento_1_bq {
+    mix-blend-mode: normal;
+    transform: translate(-1290px, -1173px) matrix(1, 0, 0, 1, 1167, 1296) rotate(90deg);
+    transform-origin: center;
+    position: absolute;
+    width: 423px;
+    height: 177px;
+    left: 0px;
+    top: 0px;
+    overflow: hidden;
+}
+
+#GLOBEX_br {
+    opacity: 0.05;
+    left: -3px;
+    top: -17px;
+    position: absolute;
+    overflow: visible;
+    width: 458px;
+    white-space: nowrap;
+    text-align: left;
+    font-family: Product Sans;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 120px;
+    color: rgba(0, 0, 0, 1);
+}
+
+#Cuadrcula_de_repeticin_2_9 {
+    position: absolute;
+    width: 177px;
+    height: 423px;
+    left: 764px;
+    top: 455px;
+    overflow: visible;
+}
+
+#Grupo_de_desplazamiento_1_bt {
+    mix-blend-mode: normal;
+    transform: translate(-1290px, -1173px) matrix(1, 0, 0, 1, 1167, 1296) rotate(90deg);
+    transform-origin: center;
+    position: absolute;
+    width: 423px;
+    height: 177px;
+    left: 0px;
+    top: 0px;
+    overflow: hidden;
+}
+
+#GLOBEX_bu {
+    opacity: 0.05;
+    left: -3px;
+    top: -17px;
+    position: absolute;
+    overflow: visible;
+    width: 458px;
+    white-space: nowrap;
+    text-align: left;
+    font-family: Product Sans;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 120px;
+    color: rgba(0, 0, 0, 1);
+}
+
+#Cuadrcula_de_repeticin_2_10 {
+    position: absolute;
+    width: 177px;
+    height: 423px;
+    left: 0px;
+    top: 898px;
+    overflow: visible;
+}
+
+#Grupo_de_desplazamiento_1_bw {
+    mix-blend-mode: normal;
+    transform: translate(-1290px, -1173px) matrix(1, 0, 0, 1, 1167, 1296) rotate(90deg);
+    transform-origin: center;
+    position: absolute;
+    width: 423px;
+    height: 177px;
+    left: 0px;
+    top: 0px;
+    overflow: hidden;
+}
+
+#GLOBEX_bx {
+    opacity: 0.05;
+    left: -3px;
+    top: -17px;
+    position: absolute;
+    overflow: visible;
+    width: 458px;
+    white-space: nowrap;
+    text-align: left;
+    font-family: Product Sans;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 120px;
+    color: rgba(0, 0, 0, 1);
+}
+
+#Cuadrcula_de_repeticin_2_11 {
+    position: absolute;
+    width: 177px;
+    height: 423px;
+    left: 191px;
+    top: 898px;
+    overflow: visible;
+}
+
+#Grupo_de_desplazamiento_1_bz {
+    mix-blend-mode: normal;
+    transform: translate(-1290px, -1173px) matrix(1, 0, 0, 1, 1167, 1296) rotate(90deg);
+    transform-origin: center;
+    position: absolute;
+    width: 423px;
+    height: 177px;
+    left: 0px;
+    top: 0px;
+    overflow: hidden;
+}
+
+#GLOBEX_b {
+    opacity: 0.05;
+    left: -3px;
+    top: -17px;
+    position: absolute;
+    overflow: visible;
+    width: 458px;
+    white-space: nowrap;
+    text-align: left;
+    font-family: Product Sans;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 120px;
+    color: rgba(0, 0, 0, 1);
+}
+
+#Cuadrcula_de_repeticin_2_12 {
+    position: absolute;
+    width: 177px;
+    height: 423px;
+    left: 382px;
+    top: 898px;
+    overflow: visible;
+}
+
+#Grupo_de_desplazamiento_1_b {
+    mix-blend-mode: normal;
+    transform: translate(-1290px, -1173px) matrix(1, 0, 0, 1, 1167, 1296) rotate(90deg);
+    transform-origin: center;
+    position: absolute;
+    width: 423px;
+    height: 177px;
+    left: 0px;
+    top: 0px;
+    overflow: hidden;
+}
+
+#GLOBEX_ca {
+    opacity: 0.05;
+    left: -3px;
+    top: -17px;
+    position: absolute;
+    overflow: visible;
+    width: 458px;
+    white-space: nowrap;
+    text-align: left;
+    font-family: Product Sans;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 120px;
+    color: rgba(0, 0, 0, 1);
+}
+
+#Cuadrcula_de_repeticin_2_13 {
+    position: absolute;
+    width: 177px;
+    height: 423px;
+    left: 573px;
+    top: 898px;
+    overflow: visible;
+}
+
+#Grupo_de_desplazamiento_1_ca {
+    mix-blend-mode: normal;
+    transform: translate(-1290px, -1173px) matrix(1, 0, 0, 1, 1167, 1296) rotate(90deg);
+    transform-origin: center;
+    position: absolute;
+    width: 423px;
+    height: 177px;
+    left: 0px;
+    top: 0px;
+    overflow: hidden;
+}
+
+#GLOBEX_cb {
+    opacity: 0.05;
+    left: -3px;
+    top: -17px;
+    position: absolute;
+    overflow: visible;
+    width: 458px;
+    white-space: nowrap;
+    text-align: left;
+    font-family: Product Sans;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 120px;
+    color: rgba(0, 0, 0, 1);
+}
+
+#Cuadrcula_de_repeticin_2_14 {
+    position: absolute;
+    width: 177px;
+    height: 423px;
+    left: 764px;
+    top: 898px;
+    overflow: visible;
+}
+
+#Grupo_de_desplazamiento_1_cb {
+    mix-blend-mode: normal;
+    transform: translate(-1290px, -1173px) matrix(1, 0, 0, 1, 1167, 1296) rotate(90deg);
+    transform-origin: center;
+    position: absolute;
+    width: 423px;
+    height: 177px;
+    left: 0px;
+    top: 0px;
+    overflow: hidden;
+}
+
+#GLOBEX_cc {
+    opacity: 0.05;
+    left: -3px;
+    top: -17px;
+    position: absolute;
+    overflow: visible;
+    width: 458px;
+    white-space: nowrap;
+    text-align: left;
+    font-family: Product Sans;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 120px;
+    color: rgba(0, 0, 0, 1);
+}
+
+#Cuadrcula_de_repeticin_2_15 {
+    position: absolute;
+    width: 177px;
+    height: 423px;
+    left: 0px;
+    top: 1341px;
+    overflow: visible;
+}
+
+#Grupo_de_desplazamiento_1_cc {
+    mix-blend-mode: normal;
+    transform: translate(-1290px, -1173px) matrix(1, 0, 0, 1, 1167, 1296) rotate(90deg);
+    transform-origin: center;
+    position: absolute;
+    width: 423px;
+    height: 177px;
+    left: 0px;
+    top: 0px;
+    overflow: hidden;
+}
+
+#GLOBEX_cd {
+    opacity: 0.05;
+    left: -3px;
+    top: -17px;
+    position: absolute;
+    overflow: visible;
+    width: 458px;
+    white-space: nowrap;
+    text-align: left;
+    font-family: Product Sans;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 120px;
+    color: rgba(0, 0, 0, 1);
+}
+
+#Cuadrcula_de_repeticin_2_16 {
+    position: absolute;
+    width: 177px;
+    height: 423px;
+    left: 191px;
+    top: 1341px;
+    overflow: visible;
+}
+
+#Grupo_de_desplazamiento_1_ce {
+    mix-blend-mode: normal;
+    transform: translate(-1290px, -1173px) matrix(1, 0, 0, 1, 1167, 1296) rotate(90deg);
+    transform-origin: center;
+    position: absolute;
+    width: 423px;
+    height: 177px;
+    left: 0px;
+    top: 0px;
+    overflow: hidden;
+}
+
+#GLOBEX_cf {
+    opacity: 0.05;
+    left: -3px;
+    top: -17px;
+    position: absolute;
+    overflow: visible;
+    width: 458px;
+    white-space: nowrap;
+    text-align: left;
+    font-family: Product Sans;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 120px;
+    color: rgba(0, 0, 0, 1);
+}
+
+#Cuadrcula_de_repeticin_2_17 {
+    position: absolute;
+    width: 177px;
+    height: 423px;
+    left: 382px;
+    top: 1341px;
+    overflow: visible;
+}
+
+#Grupo_de_desplazamiento_1_ch {
+    mix-blend-mode: normal;
+    transform: translate(-1290px, -1173px) matrix(1, 0, 0, 1, 1167, 1296) rotate(90deg);
+    transform-origin: center;
+    position: absolute;
+    width: 423px;
+    height: 177px;
+    left: 0px;
+    top: 0px;
+    overflow: hidden;
+}
+
+#GLOBEX_ci {
+    opacity: 0.05;
+    left: -3px;
+    top: -17px;
+    position: absolute;
+    overflow: visible;
+    width: 458px;
+    white-space: nowrap;
+    text-align: left;
+    font-family: Product Sans;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 120px;
+    color: rgba(0, 0, 0, 1);
+}
+
+#Cuadrcula_de_repeticin_2_18 {
+    position: absolute;
+    width: 177px;
+    height: 423px;
+    left: 573px;
+    top: 1341px;
+    overflow: visible;
+}
+
+#Grupo_de_desplazamiento_1_ck {
+    mix-blend-mode: normal;
+    transform: translate(-1290px, -1173px) matrix(1, 0, 0, 1, 1167, 1296) rotate(90deg);
+    transform-origin: center;
+    position: absolute;
+    width: 423px;
+    height: 177px;
+    left: 0px;
+    top: 0px;
+    overflow: hidden;
+}
+
+#GLOBEX_cl {
+    opacity: 0.05;
+    left: -3px;
+    top: -17px;
+    position: absolute;
+    overflow: visible;
+    width: 458px;
+    white-space: nowrap;
+    text-align: left;
+    font-family: Product Sans;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 120px;
+    color: rgba(0, 0, 0, 1);
+}
+
+#Cuadrcula_de_repeticin_2_19 {
+    position: absolute;
+    width: 177px;
+    height: 423px;
+    left: 764px;
+    top: 1341px;
+    overflow: visible;
+}
+
+#Grupo_de_desplazamiento_1_cn {
+    mix-blend-mode: normal;
+    transform: translate(-1290px, -1173px) matrix(1, 0, 0, 1, 1167, 1296) rotate(90deg);
+    transform-origin: center;
+    position: absolute;
+    width: 423px;
+    height: 177px;
+    left: 0px;
+    top: 0px;
+    overflow: hidden;
+}
+
+#GLOBEX_co {
+    opacity: 0.05;
+    left: -3px;
+    top: -17px;
+    position: absolute;
+    overflow: visible;
+    width: 458px;
+    white-space: nowrap;
+    text-align: left;
+    font-family: Product Sans;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 120px;
+    color: rgba(0, 0, 0, 1);
+}
+
+#Cdigo_de_tica {
+    left: 727px;
+    top: 1645px;
+    position: absolute;
+    overflow: visible;
+    width: 471px;
+    white-space: nowrap;
+    text-align: center;
+    font-family: Lucida Fax;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 60px;
+    color: rgba(0, 0, 0, 1);
+}
+
+#Grupo_915 {
+    position: absolute;
+    width: 1598px;
+    height: 588px;
+    left: 147px;
+    top: 487px;
+    overflow: visible;
+}
+
+#Rectngulo_96 {
+    fill: rgba(255, 255, 255, 1);
+}
+
+.Rectngulo_96 {
+    filter: drop-shadow(50px 50px 99px rgba(34, 34, 34, 0.059));
+    position: absolute;
+    overflow: visible;
+    width: 1895px;
+    height: 885px;
+    left: 0px;
+    top: 0px;
+}
+
+#Entrate_de_los_artculos_y_dere {
+    left: 117.38px;
+    top: 162.671px;
+    position: absolute;
+    overflow: visible;
+    width: 613.864px;
+    height: 177.58592224121094px;
+    line-height: 55px;
+    margin-top: -14.5px;
+    text-align: left;
+    font-family: Product Sans;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 26px;
+    color: rgba(0, 0, 0, 1);
+}
+
+#Rectngulo_97 {
+    fill: rgba(244, 102, 50, 1);
+}
+
+.Rectngulo_97 {
+    position: absolute;
+    overflow: visible;
+    width: 281.136px;
+    height: 73.301px;
+    left: 134.244px;
+    top: 369.35px;
+}
+
+#Legislacin_Informtica_ {
+    left: 134.88px;
+    top: 77.675px;
+    position: absolute;
+    overflow: visible;
+    width: 562px;
+    white-space: nowrap;
+    text-align: left;
+    font-family: Product Sans;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 50px;
+    color: rgba(0, 0, 0, 1);
+}
+
+#Rectngulo_247 {
+    fill: rgba(244, 102, 50, 1);
+}
+
+.Rectngulo_247 {
+    position: absolute;
+    overflow: visible;
+    width: 264.475px;
+    height: 72.219px;
+    left: 519.342px;
+    top: 369.304px;
+}
+
+#Registrate_ {
+    left: 666px;
+    top: 855px;
+    position: absolute;
+    overflow: visible;
+    width: 265.475px;
+    height: 73.219px;
+    white-space: nowrap;
+    text-align: right;
+    font-family: Product Sans;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 24px;
+    color: rgb(255, 255, 255);
+    background-color: darkgreen;
+    text-align: center;
+    cursor: pointer;
+    border-radius: 15px;
+}
+
+#Iniciar_sesion {
+    left: 281px;
+    top: 855px;
+    position: absolute;
+    overflow: visible;
+    width: 281.475px;
+    height: 74.219px;
+    white-space: nowrap;
+    text-align: right;
+    font-family: Product Sans;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 24px;
+    color: rgb(255, 255, 255);
+    background-color: darkgreen;
+    text-align: center;
+    cursor: pointer;
+    border-radius: 15px;
+}
+
+#Grupo_908 {
+    position: absolute;
+    width: 1920px;
+    height: 881px;
+    left: 0px;
+    top: 11628px;
+    overflow: visible;
+}
+
+#Rectngulo_73 {
+    fill: rgba(250, 250, 250, 1);
+}
+
+.Rectngulo_73 {
+    position: absolute;
+    overflow: visible;
+    width: 1920px;
+    height: 881px;
+    left: 0px;
+    top: 0px;
+}
+
+#Grupo_907 {
+    position: absolute;
+    width: 950px;
+    height: 493.5px;
+    left: 485px;
+    top: 90px;
+    overflow: visible;
+}
+
+#Grupo_854 {
+    position: absolute;
+    width: 950px;
+    height: 159px;
+    left: 0px;
+    top: 0px;
+    overflow: visible;
+}
+
+#ACTUALIZACION {
+    opacity: 0.05;
+    left: 0px;
+    top: 0px;
+    position: absolute;
+    overflow: visible;
+    width: 951px;
+    white-space: nowrap;
+    text-align: left;
+    font-family: Product Sans;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 120px;
+    color: rgba(0, 0, 0, 1);
+}
+
+#ACTUALIZACION_c {
+    left: 351px;
+    top: 65.5px;
+    position: absolute;
+    overflow: visible;
+    width: 270px;
+    white-space: nowrap;
+    text-align: left;
+    font-family: Product Sans;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 34px;
+    color: rgba(0, 0, 0, 1);
+}
+
+#Ultima_actualizacin_del_sistem {
+    left: 269px;
+    top: 271.5px;
+    position: absolute;
+    overflow: visible;
+    width: 437px;
+    white-space: nowrap;
+    text-align: center;
+    font-family: Product Sans;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 29px;
+    color: rgba(0, 0, 0, 1);
+}
+
+#Grupo_341 {
+    opacity: 0.2;
+    position: absolute;
+    width: 568px;
+    height: 22px;
+    left: 189px;
+    top: 225.5px;
+    overflow: visible;
+}
+
+#Elipse_195 {
+    fill: transparent;
+    stroke: rgba(0, 0, 0, 1);
+    stroke-width: 3px;
+    stroke-linejoin: miter;
+    stroke-linecap: round;
+    stroke-miterlimit: 4;
+    shape-rendering: auto;
+}
+
+.Elipse_195 {
+    position: absolute;
+    overflow: visible;
+    width: 22px;
+    height: 22px;
+    left: 0px;
+    top: 0px;
+}
+
+#Trazado_468 {
+    fill: transparent;
+    stroke: rgba(0, 0, 0, 1);
+    stroke-width: 3px;
+    stroke-linejoin: miter;
+    stroke-linecap: round;
+    stroke-dasharray: 16;
+    stroke-dashoffset: 0;
+    stroke-miterlimit: 4;
+    shape-rendering: auto;
+}
+
+.Trazado_468 {
+    overflow: visible;
+    position: absolute;
+    width: 529.744px;
+    height: 3px;
+    left: 20.615px;
+    top: 11.5px;
+    transform: matrix(1, 0, 0, 1, 0, 0);
+}
+
+#Elipse_197 {
+    fill: rgba(0, 0, 0, 1);
+    stroke: rgba(0, 0, 0, 1);
+    stroke-width: 3px;
+    stroke-linejoin: miter;
+    stroke-linecap: round;
+    stroke-miterlimit: 4;
+    shape-rendering: auto;
+}
+
+.Elipse_197 {
+    position: absolute;
+    overflow: visible;
+    width: 22px;
+    height: 22px;
+    left: 546px;
+    top: 0px;
+}
+
+#Rectngulo_114 {
+    fill: rgba(255, 255, 255, 1);
+}
+
+.Rectngulo_114 {
+    filter: drop-shadow(40px 40px 99px rgba(172, 172, 172, 0.161));
+    position: absolute;
+    overflow: visible;
+    width: 979px;
+    height: 457px;
+    left: 164px;
+    top: 333.5px;
+}
+
+#ID04____________04__________20 {
+    left: 215px;
+    top: 400.5px;
+    position: absolute;
+    overflow: visible;
+    width: 521px;
+    white-space: nowrap;
+    text-align: center;
+    font-family: Product Sans;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 45px;
+    color: rgba(0, 0, 0, 1);
+}
+
+#Dia {
+    left: 704px;
+    top: 450.5px;
+    position: absolute;
+    overflow: visible;
+    width: 47px;
+    white-space: nowrap;
+    text-align: center;
+    font-family: Product Sans;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 29px;
+    color: rgba(0, 0, 0, 1);
+}
+
+#Mes {
+    left: 919px;
+    top: 450.5px;
+    position: absolute;
+    overflow: visible;
+    width: 57px;
+    white-space: nowrap;
+    text-align: center;
+    font-family: Product Sans;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 29px;
+    color: rgba(0, 0, 0, 1);
+}
+
+#Ao {
+    left: 1143px;
+    top: 450.5px;
+    position: absolute;
+    overflow: visible;
+    width: 57px;
+    white-space: nowrap;
+    text-align: center;
+    font-family: Product Sans;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 29px;
+    color: rgba(0, 0, 0, 1);
+}
+
+#Grupo_898 {
+    position: absolute;
+    width: 1466px;
+    height: 6211px;
+    left: 227px;
+    top: 3542px;
+    overflow: visible;
+}
+
+#Trazado_695 {
+    fill: transparent;
+    stroke: rgba(232, 232, 232, 1);
+    stroke-width: 2px;
+    stroke-linejoin: miter;
+    stroke-linecap: round;
+    stroke-miterlimit: 4;
+    shape-rendering: auto;
+}
+
+.Trazado_695 {
+    overflow: visible;
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    left: 9.002px;
+    top: 2261.967px;
+    transform: matrix(1, 0, 0, 1, 0, 0);
+}
+
+#Grupo_852 {
+    position: absolute;
+    width: 1466px;
+    height: 171px;
+    left: 0px;
+    top: 0px;
+    overflow: visible;
+}
+
+#Cuadrcula_de_repeticin_1 {
+    position: absolute;
+    width: 1466px;
+    height: 171px;
+    left: 0px;
+    top: 0px;
+    overflow: hidden;
+}
+
+#Cuadrcula_de_repeticin_1_0 {
+    position: absolute;
+    width: 457px;
+    height: 159px;
+    left: 6px;
+    top: 6px;
+    overflow: visible;
+}
+
+#GLOBEX_dj {
+    opacity: 0.05;
+    left: 0px;
+    top: 0px;
+    position: absolute;
+    overflow: visible;
+    width: 458px;
+    white-space: nowrap;
+    text-align: left;
+    font-family: Product Sans;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 120px;
+    color: rgba(0, 0, 0, 1);
+}
+
+#Cuadrcula_de_repeticin_1_1 {
+    position: absolute;
+    width: 457px;
+    height: 159px;
+    left: 495px;
+    top: 6px;
+    overflow: visible;
+}
+
+#GLOBEX_dl {
+    opacity: 0.05;
+    left: 0px;
+    top: 0px;
+    position: absolute;
+    overflow: visible;
+    width: 458px;
+    white-space: nowrap;
+    text-align: left;
+    font-family: Product Sans;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 120px;
+    color: rgba(0, 0, 0, 1);
+}
+
+#Cuadrcula_de_repeticin_1_2 {
+    position: absolute;
+    width: 457px;
+    height: 159px;
+    left: 984px;
+    top: 6px;
+    overflow: visible;
+}
+
+#GLOBEX_dn {
+    opacity: 0.05;
+    left: 0px;
+    top: 0px;
+    position: absolute;
+    overflow: visible;
+    width: 458px;
+    white-space: nowrap;
+    text-align: left;
+    font-family: Product Sans;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 120px;
+    color: rgba(0, 0, 0, 1);
+}
+
+#Grupo_897 {
+    position: absolute;
+    width: 1460px;
+    height: 5986px;
+    left: 3px;
+    top: 225px;
+    overflow: visible;
+}
+
+#Grupo_890 {
+    position: absolute;
+    width: 1460px;
+    height: 5920px;
+    left: 0px;
+    top: 66px;
+    overflow: visible;
+}
+
+#Artculo_11_ARTICULO_11El_derec {
+    left: 0px;
+    top: 0px;
+    position: absolute;
+    overflow: hidden;
+    width: 1461px;
+    height: 5920px;
+    line-height: 34px;
+    margin-top: -5.5px;
+    text-align: left;
+    font-family: Microsoft Sans Serif;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 23px;
+    color: rgba(0, 0, 0, 1);
+}
+
+#Grupo_887 {
+    position: absolute;
+    width: 1383px;
+    height: 53px;
+    left: 0px;
+    top: 0px;
+    overflow: visible;
+}
+
+#Trazado_696 {
+    fill: transparent;
+    stroke: rgba(0, 0, 0, 1);
+    stroke-width: 6px;
+    stroke-linejoin: miter;
+    stroke-linecap: round;
+    stroke-miterlimit: 4;
+    shape-rendering: auto;
+}
+
+.Trazado_696 {
+    overflow: visible;
+    position: absolute;
+    width: 6px;
+    height: 44.009px;
+    left: 0px;
+    top: 6.399px;
+    transform: matrix(1, 0, 0, 1, 0, 0);
+}
+
+#Rectngulo_242 {
+    fill: rgba(248, 248, 248, 1);
+}
+
+.Rectngulo_242 {
+    position: absolute;
+    overflow: visible;
+    width: 1363px;
+    height: 53px;
+    left: 20px;
+    top: 0px;
+}
+
+#Constitucin_Poltica_De_Colombi {
+    left: 30px;
+    top: 9px;
+    position: absolute;
+    overflow: visible;
+    width: 673px;
+    white-space: nowrap;
+    text-align: right;
+    font-family: Product Sans;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 26px;
+    color: rgba(0, 0, 0, 1);
+}
+
+#Grupo_922 {
+    position: absolute;
+    width: 1460px;
+    height: 629px;
+    left: 230px;
+    top: 10865px;
+    overflow: visible;
+}
+
+#Rectngulo_148 {
+    fill: rgba(255, 255, 255, 1);
+}
+
+.Rectngulo_148 {
+    filter: drop-shadow(50px 0px 99px rgba(100, 100, 100, 0.059));
+    position: absolute;
+    overflow: visible;
+    width: 1757px;
+    height: 926px;
+    left: 0px;
+    top: 0px;
+}
+
+#Grupo_867 {
+    position: absolute;
+    width: 1149px;
+    height: 500.5px;
+    left: 152.5px;
+    top: 50.5px;
+    overflow: visible;
+}
+
+#Grupo_853 {
+    position: absolute;
+    width: 1149px;
+    height: 159px;
+    left: 0px;
+    top: 0px;
+    overflow: visible;
+}
+
+#DESARROLLADORES {
+    opacity: 0.05;
+    left: 0px;
+    top: 0px;
+    position: absolute;
+    overflow: visible;
+    width: 1150px;
+    white-space: nowrap;
+    text-align: left;
+    font-family: Product Sans;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 120px;
+    color: rgba(0, 0, 0, 1);
+}
+
+#DESARROLLADORES_d {
+    left: 448.5px;
+    top: 58.5px;
+    position: absolute;
+    overflow: visible;
+    width: 307px;
+    white-space: nowrap;
+    text-align: left;
+    font-family: Product Sans;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 32px;
+    color: rgba(0, 0, 0, 1);
+}
+
+#Andres_Arevalo {
+    left: 921.5px;
+    top: 449.5px;
+    position: absolute;
+    overflow: visible;
+    width: 145px;
+    white-space: nowrap;
+    line-height: 35px;
+    margin-top: -7.5px;
+    text-align: right;
+    font-family: Product Sans;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 20px;
+    color: rgba(0, 0, 0, 1);
+}
+
+#Team_-_Programador {
+    left: 921.5px;
+    top: 476.5px;
+    position: absolute;
+    overflow: visible;
+    width: 165px;
+    white-space: nowrap;
+    line-height: 30px;
+    margin-top: -6px;
+    text-align: right;
+    font-family: Product Sans;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 18px;
+    color: rgba(0, 0, 0, 1);
+}
+
+#Francisco_Casallas {
+    left: 91.5px;
+    top: 449.5px;
+    position: absolute;
+    overflow: visible;
+    width: 167px;
+    white-space: nowrap;
+    line-height: 35px;
+    margin-top: -7.5px;
+    text-align: right;
+    font-family: Product Sans;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 20px;
+    color: rgba(0, 0, 0, 1);
+}
+
+#Scrum_Master_-_Programador {
+    left: 58.5px;
+    top: 476.5px;
+    position: absolute;
+    overflow: visible;
+    width: 233px;
+    white-space: nowrap;
+    line-height: 30px;
+    margin-top: -6px;
+    text-align: right;
+    font-family: Product Sans;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 18px;
+    color: rgba(0, 0, 0, 1);
+}
+
+#Roberto_Nieto {
+    left: 522.5px;
+    top: 449.5px;
+    position: absolute;
+    overflow: visible;
+    width: 135px;
+    white-space: nowrap;
+    line-height: 35px;
+    margin-top: -7.5px;
+    text-align: right;
+    font-family: Product Sans;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 20px;
+    color: rgba(0, 0, 0, 1);
+}
+
+#Team_-_Diseador {
+    left: 516.5px;
+    top: 476.5px;
+    position: absolute;
+    overflow: visible;
+    width: 141px;
+    white-space: nowrap;
+    line-height: 35px;
+    margin-top: -8.5px;
+    text-align: right;
+    font-family: Product Sans;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 18px;
+    color: rgba(0, 0, 0, 1);
+}
+
+#Imagen_5 {
+    filter: drop-shadow(0px 3px 6px rgba(142, 35, 88, 0.871)) blur(32px);
+    position: absolute;
+    width: 216px;
+    height: 216px;
+    left: 66.5px;
+    top: 213.5px;
+    overflow: visible;
+}
+
+#Imagen_6 {
+    filter: drop-shadow(0px 3px 6px rgba(6, 6, 5, 1)) blur(30px);
+    position: absolute;
+    width: 207px;
+    height: 207px;
+    left: 645px;
+    top: 273px;
+    overflow: visible;
+}
+
+#Imagen_7 {
+    filter: drop-shadow(0px 3px 6px rgba(62, 13, 13, 0.62)) blur(50px);
+    position: absolute;
+    width: 204px;
+    height: 204px;
+    left: 1044px;
+    top: 276px;
+    overflow: visible;
+}
+
+#Bandera {
+    position: absolute;
+    width: 1460px;
+    height: 334.467px;
+    left: 230px;
+    top: 140px;
+    overflow: visible;
+}
+
+#Rectngulo_246 {
+    fill: rgba(255, 255, 255, 1);
+    stroke: rgba(112, 112, 112, 1);
+    stroke-width: 1px;
+    stroke-linejoin: miter;
+    stroke-linecap: butt;
+    stroke-miterlimit: 4;
+    shape-rendering: auto;
+}
+
+.Rectngulo_246 {
+    position: absolute;
+    overflow: visible;
+    width: 7px;
+    height: 1px;
+    left: 732px;
+    top: 463px;
+}
+
+#Derechos_Reservados {
+    left: 230px;
+    top: 75px;
+    position: absolute;
+    overflow: visible;
+    width: 301px;
+    height: 300px;
+    text-align: left;
+    font-family: Segoe UI;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 20px;
+    color: rgba(112, 112, 112, 1);
+}
+
+#Imagen_2 {
+    position: absolute;
+    width: 480px;
+    height: 267px;
+    left: 1126px;
+    top: 500px;
+    overflow: visible;
+}
+
+#Imagen_3 {
+    position: absolute;
+    width: 815px;
+    height: 619px;
+    left: 278px;
+    top: 1081px;
+    overflow: visible;
+}
+
+#ID0001 {
+    position: absolute;
+    width: 1889.5px;
+    height: 672px;
+    left: 15.25px;
+    top: 2842px;
+    overflow: visible;
+}
+
+#La_Legislacin_en_informtica_se {
+    left: 1059px;
+    top: 767px;
+    position: absolute;
+    overflow: visible;
+    width: 632px;
+    height: 308px;
+    text-align: center;
+    font-family: Segoe UI;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 28px;
+    color: rgba(7, 1, 1, 1);
+}
+
+#Los_cdigos_de_tica_para_el_ing {
+    left: 545px;
+    top: 3570px;
+    position: absolute;
+    overflow: hidden;
+    width: 752px;
+    height: 112px;
+    line-height: 50px;
+    margin-top: -12px;
+    text-align: center;
+    font-family: Product Sans;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 26px;
+    color: rgba(0, 0, 0, 1);
+    text-transform: uppercase;
+}
+
+#Grupo_925 {
+    position: absolute;
+    width: 1466px;
+    height: 171px;
+    left: 227px;
+    top: 6467.897px;
+    overflow: visible;
+}
+
+#Cuadrcula_de_repeticin_1_ej {
+    position: absolute;
+    width: 1466px;
+    height: 171px;
+    left: 0px;
+    top: 0px;
+    overflow: hidden;
+}
+
+#Cuadrcula_de_repeticin_1_ej_0 {
+    position: absolute;
+    width: 457px;
+    height: 159px;
+    left: 6px;
+    top: 6px;
+    overflow: visible;
+}
+
+#GLOBEX_el {
+    opacity: 0.05;
+    left: 0px;
+    top: 0px;
+    position: absolute;
+    overflow: visible;
+    width: 458px;
+    white-space: nowrap;
+    text-align: left;
+    font-family: Product Sans;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 120px;
+    color: rgba(0, 0, 0, 1);
+}
+
+#Cuadrcula_de_repeticin_1_ej_1 {
+    position: absolute;
+    width: 457px;
+    height: 159px;
+    left: 495px;
+    top: 6px;
+    overflow: visible;
+}
+
+#GLOBEX_en {
+    opacity: 0.05;
+    left: 0px;
+    top: 0px;
+    position: absolute;
+    overflow: visible;
+    width: 458px;
+    white-space: nowrap;
+    text-align: left;
+    font-family: Product Sans;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 120px;
+    color: rgba(0, 0, 0, 1);
+}
+
+#Cuadrcula_de_repeticin_1_ej_2 {
+    position: absolute;
+    width: 457px;
+    height: 159px;
+    left: 984px;
+    top: 6px;
+    overflow: visible;
+}
+
+#GLOBEX_ep {
+    opacity: 0.05;
+    left: 0px;
+    top: 0px;
+    position: absolute;
+    overflow: visible;
+    width: 458px;
+    white-space: nowrap;
+    text-align: left;
+    font-family: Product Sans;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 120px;
+    color: rgba(0, 0, 0, 1);
+}
+
+#Grupo_de_desplazamiento_2 {
+    mix-blend-mode: normal;
+    position: absolute;
+    width: 1460px;
+    height: 196.913px;
+    left: 230px;
+    top: 11155.5px;
+    overflow: hidden;
+}
+
+#Grupo_924 {
+    mix-blend-mode: color;
+    position: absolute;
+    width: 1466px;
+    height: 196.913px;
+    left: -3px;
+    top: 0px;
+    overflow: visible;
+}
+
+#Cuadrcula_de_repeticin_1_es {
+    position: absolute;
+    width: 1466px;
+    height: 196.913px;
+    left: 0px;
+    top: 0px;
+    overflow: hidden;
+}
+
+#Cuadrcula_de_repeticin_1_es_0 {
+    position: absolute;
+    width: 457px;
+    height: 159px;
+    left: 6px;
+    top: 6px;
+    overflow: visible;
+}
+
+#GLOBEX_eu {
+    opacity: 0.05;
+    left: 0px;
+    top: 0px;
+    position: absolute;
+    overflow: visible;
+    width: 458px;
+    white-space: nowrap;
+    text-align: left;
+    font-family: Product Sans;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 120px;
+    color: rgba(0, 0, 0, 1);
+}
+
+#Cuadrcula_de_repeticin_1_es_1 {
+    position: absolute;
+    width: 457px;
+    height: 159px;
+    left: 495px;
+    top: 6px;
+    overflow: visible;
+}
+
+#GLOBEX_ew {
+    opacity: 0.05;
+    left: 0px;
+    top: 0px;
+    position: absolute;
+    overflow: visible;
+    width: 458px;
+    white-space: nowrap;
+    text-align: left;
+    font-family: Product Sans;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 120px;
+    color: rgba(0, 0, 0, 1);
+}
+
+#Cuadrcula_de_repeticin_1_es_2 {
+    position: absolute;
+    width: 457px;
+    height: 159px;
+    left: 984px;
+    top: 6px;
+    overflow: visible;
+}
+
+#GLOBEX_ey {
+    opacity: 0.05;
+    left: 0px;
+    top: 0px;
+    position: absolute;
+    overflow: visible;
+    width: 458px;
+    white-space: nowrap;
+    text-align: left;
+    font-family: Product Sans;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 120px;
+    color: rgba(0, 0, 0, 1);
+}
+
+#Cuadrcula_de_repeticin_1_es_3 {
+    position: absolute;
+    width: 457px;
+    height: 159px;
+    left: 6px;
+    top: 197px;
+    overflow: visible;
+}
+
+#GLOBEX_e {
+    opacity: 0.05;
+    left: 0px;
+    top: 0px;
+    position: absolute;
+    overflow: visible;
+    width: 458px;
+    white-space: nowrap;
+    text-align: left;
+    font-family: Product Sans;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 120px;
+    color: rgba(0, 0, 0, 1);
+}
+
+#Cuadrcula_de_repeticin_1_es_4 {
+    position: absolute;
+    width: 457px;
+    height: 159px;
+    left: 495px;
+    top: 197px;
+    overflow: visible;
+}
+
+#GLOBEX_fa {
+    opacity: 0.05;
+    left: 0px;
+    top: 0px;
+    position: absolute;
+    overflow: visible;
+    width: 458px;
+    white-space: nowrap;
+    text-align: left;
+    font-family: Product Sans;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 120px;
+    color: rgba(0, 0, 0, 1);
+}
+
+#Cuadrcula_de_repeticin_1_es_5 {
+    position: absolute;
+    width: 457px;
+    height: 159px;
+    left: 984px;
+    top: 197px;
+    overflow: visible;
+}
+
+#GLOBEX_fb {
+    opacity: 0.05;
+    left: 0px;
+    top: 0px;
+    position: absolute;
+    overflow: visible;
+    width: 458px;
+    white-space: nowrap;
+    text-align: left;
+    font-family: Product Sans;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 120px;
+    color: rgba(0, 0, 0, 1);
+}
+
+#Grupo_928 {
+    position: absolute;
+    width: 1383px;
+    height: 53px;
+    left: 230px;
+    top: 9920px;
+    overflow: visible;
+}
+
+#Trazado_696_e {
+    fill: transparent;
+    stroke: rgba(0, 0, 0, 1);
+    stroke-width: 6px;
+    stroke-linejoin: miter;
+    stroke-linecap: round;
+    stroke-miterlimit: 4;
+    shape-rendering: auto;
+}
+
+.Trazado_696_e {
+    overflow: visible;
+    position: absolute;
+    width: 6px;
+    height: 44.009px;
+    left: 0px;
+    top: 6.399px;
+    transform: matrix(1, 0, 0, 1, 0, 0);
+}
+
+#Rectngulo_242_e {
+    fill: rgba(248, 248, 248, 1);
+}
+
+.Rectngulo_242_e {
+    position: absolute;
+    overflow: visible;
+    width: 1363px;
+    height: 53px;
+    left: 20px;
+    top: 0px;
+}
+
+#Constitucin_Poltica_De_Colombi_e {
+    left: 30px;
+    top: 9px;
+    position: absolute;
+    overflow: visible;
+    width: 673px;
+    white-space: nowrap;
+    text-align: right;
+    font-family: Product Sans;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 26px;
+    color: rgba(0, 0, 0, 1);
+}
+
+#Artculo_78_ARTICULO_78La_ley_r {
+    left: 230px;
+    top: 9994px;
+    position: absolute;
+    overflow: visible;
+    width: 1461px;
+    height: 737px;
+    text-align: left;
+    font-family: Microsoft Sans Serif;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 23px;
+    color: rgba(0, 0, 0, 1);
+}
+
+#Grupo_de_desplazamiento_3 {
+    mix-blend-mode: normal;
+    transform: [object Object] rotate(-20deg);
+    transform-origin: center;
+    position: absolute;
+    width: 1471px;
+    height: 196.913px;
+    left: 0px;
+    top: 0px;
+    overflow: hidden;
+}
+
+#Grupo_929 {
+    mix-blend-mode: color;
+    position: absolute;
+    width: 1466px;
+    height: 196.913px;
+    left: -2.795px;
+    top: 2.713px;
+    overflow: visible;
+}
+
+#Cuadrcula_de_repeticin_3 {
+    position: absolute;
+    width: 1466px;
+    height: 196.913px;
+    left: 0px;
+    top: 0px;
+    overflow: hidden;
+}
+
+#Cuadrcula_de_repeticin_3_0 {
+    position: absolute;
+    width: 457px;
+    height: 159px;
+    left: 7.252px;
+    top: 345.706px;
+    overflow: visible;
+}
+
+#GLOBEX_fe {
+    opacity: 0.05;
+    left: 0px;
+    top: 0px;
+    position: absolute;
+    overflow: visible;
+    width: 458px;
+    white-space: nowrap;
+    text-align: left;
+    font-family: Product Sans;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 120px;
+    color: rgba(0, 0, 0, 1);
+}
+
+#Cuadrcula_de_repeticin_3_1 {
+    position: absolute;
+    width: 457px;
+    height: 159px;
+    left: 463.087px;
+    top: 179.795px;
+    overflow: visible;
+}
+
+#GLOBEX_fg {
+    opacity: 0.05;
+    left: 0px;
+    top: 0px;
+    position: absolute;
+    overflow: visible;
+    width: 458px;
+    white-space: nowrap;
+    text-align: left;
+    font-family: Product Sans;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 120px;
+    color: rgba(0, 0, 0, 1);
+}
+
+#Cuadrcula_de_repeticin_3_2 {
+    position: absolute;
+    width: 457px;
+    height: 159px;
+    left: 918.922px;
+    top: 13.885px;
+    overflow: visible;
+}
+
+#GLOBEX_fi {
+    opacity: 0.05;
+    left: 0px;
+    top: 0px;
+    position: absolute;
+    overflow: visible;
+    width: 458px;
+    white-space: nowrap;
+    text-align: left;
+    font-family: Product Sans;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 120px;
+    color: rgba(0, 0, 0, 1);
+}
+
+#Cuadrcula_de_repeticin_3_3 {
+    position: absolute;
+    width: 457px;
+    height: 159px;
+    left: 61.074px;
+    top: 526.396px;
+    overflow: visible;
+}
+
+#GLOBEX_fk {
+    opacity: 0.05;
+    left: 0px;
+    top: 0px;
+    position: absolute;
+    overflow: visible;
+    width: 458px;
+    white-space: nowrap;
+    text-align: left;
+    font-family: Product Sans;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 120px;
+    color: rgba(0, 0, 0, 1);
+}
+
+#Cuadrcula_de_repeticin_3_4 {
+    position: absolute;
+    width: 457px;
+    height: 159px;
+    left: 524.566px;
+    top: 357.699px;
+    overflow: visible;
+}
+
+#GLOBEX_fm {
+    opacity: 0.05;
+    left: 0px;
+    top: 0.001px;
+    position: absolute;
+    overflow: visible;
+    width: 458px;
+    white-space: nowrap;
+    text-align: left;
+    font-family: Product Sans;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 120px;
+    color: rgba(0, 0, 0, 1);
+}
+
+#Cuadrcula_de_repeticin_3_5 {
+    position: absolute;
+    width: 457px;
+    height: 159px;
+    left: 988.058px;
+    top: 189.001px;
+    overflow: visible;
+}
+
+#GLOBEX_fo {
+    opacity: 0.05;
+    left: 0px;
+    top: 0.001px;
+    position: absolute;
+    overflow: visible;
+    width: 458px;
+    white-space: nowrap;
+    text-align: left;
+    font-family: Product Sans;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 120px;
+    color: rgba(0, 0, 0, 1);
+}
+
+#Grupo_de_desplazamiento_4 {
+    mix-blend-mode: normal;
+    transform: [object Object] rotate(-20deg);
+    transform-origin: center;
+    position: absolute;
+    width: 1471px;
+    height: 196.913px;
+    left: 0px;
+    top: 0px;
+    overflow: hidden;
+}
+
+#Grupo_930 {
+    mix-blend-mode: color;
+    position: absolute;
+    width: 1466px;
+    height: 196.913px;
+    left: -2.795px;
+    top: 2.713px;
+    overflow: visible;
+}
+
+#Cuadrcula_de_repeticin_4 {
+    position: absolute;
+    width: 1466px;
+    height: 196.913px;
+    left: 0px;
+    top: 0px;
+    overflow: hidden;
+}
+
+#Cuadrcula_de_repeticin_4_0 {
+    position: absolute;
+    width: 457px;
+    height: 159px;
+    left: 7.252px;
+    top: 345.706px;
+    overflow: visible;
+}
+
+#GLOBEX_ft {
+    opacity: 0.05;
+    left: 0px;
+    top: 0px;
+    position: absolute;
+    overflow: visible;
+    width: 458px;
+    white-space: nowrap;
+    text-align: left;
+    font-family: Product Sans;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 120px;
+    color: rgba(0, 0, 0, 1);
+}
+
+#Cuadrcula_de_repeticin_4_1 {
+    position: absolute;
+    width: 457px;
+    height: 159px;
+    left: 463.087px;
+    top: 179.795px;
+    overflow: visible;
+}
+
+#GLOBEX_fv {
+    opacity: 0.05;
+    left: 0px;
+    top: 0px;
+    position: absolute;
+    overflow: visible;
+    width: 458px;
+    white-space: nowrap;
+    text-align: left;
+    font-family: Product Sans;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 120px;
+    color: rgba(0, 0, 0, 1);
+}
+
+#Cuadrcula_de_repeticin_4_2 {
+    position: absolute;
+    width: 457px;
+    height: 159px;
+    left: 918.922px;
+    top: 13.885px;
+    overflow: visible;
+}
+
+#GLOBEX_fx {
+    opacity: 0.05;
+    left: 0px;
+    top: 0px;
+    position: absolute;
+    overflow: visible;
+    width: 458px;
+    white-space: nowrap;
+    text-align: left;
+    font-family: Product Sans;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 120px;
+    color: rgba(0, 0, 0, 1);
+}
+
+#Cuadrcula_de_repeticin_4_3 {
+    position: absolute;
+    width: 457px;
+    height: 159px;
+    left: 61.074px;
+    top: 526.396px;
+    overflow: visible;
+}
+
+#GLOBEX_fz {
+    opacity: 0.05;
+    left: 0px;
+    top: 0px;
+    position: absolute;
+    overflow: visible;
+    width: 458px;
+    white-space: nowrap;
+    text-align: left;
+    font-family: Product Sans;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 120px;
+    color: rgba(0, 0, 0, 1);
+}
+
+#Cuadrcula_de_repeticin_4_4 {
+    position: absolute;
+    width: 457px;
+    height: 159px;
+    left: 524.566px;
+    top: 357.698px;
+    overflow: visible;
+}
+
+#GLOBEX_f {
+    opacity: 0.05;
+    left: 0px;
+    top: 0.001px;
+    position: absolute;
+    overflow: visible;
+    width: 458px;
+    white-space: nowrap;
+    text-align: left;
+    font-family: Product Sans;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 120px;
+    color: rgba(0, 0, 0, 1);
+}
+
+#Cuadrcula_de_repeticin_4_5 {
+    position: absolute;
+    width: 457px;
+    height: 159px;
+    left: 988.058px;
+    top: 189px;
+    overflow: visible;
+}
+
+#GLOBEX_ga {
+    opacity: 0.05;
+    left: 0px;
+    top: 0.001px;
+    position: absolute;
+    overflow: visible;
+    width: 458px;
+    white-space: nowrap;
+    text-align: left;
+    font-family: Product Sans;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 120px;
+    color: rgba(0, 0, 0, 1);
+}
+
+#Grupo_909 {
+    position: absolute;
+    width: 458px;
+    height: 27px;
+    left: 697px;
+    top: 12646px;
+    overflow: visible;
+}
+
+#Correo_Electronico__Globexcorp {
+    left: 0px;
+    top: 0px;
+    position: absolute;
+    overflow: visible;
+    width: 459px;
+    white-space: nowrap;
+    text-align: right;
+    font-family: Product Sans;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 20px;
+    color: rgba(0, 0, 0, 1);
+}
+
+#Grupo_926 {
+    position: absolute;
+    width: 357px;
+    height: 27px;
+    left: 742px;
+    top: 12673px;
+    overflow: visible;
+}
+
+#Direccin__calle_80__19-12_-_Bo {
+    left: 0px;
+    top: 0px;
+    position: absolute;
+    overflow: visible;
+    width: 358px;
+    white-space: nowrap;
+    text-align: right;
+    font-family: Product Sans;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 20px;
+    color: rgba(0, 0, 0, 1);
+}
+
+#Grupo_927 {
+    position: absolute;
+    width: 287px;
+    height: 27px;
+    left: 768px;
+    top: 12702px;
+    overflow: visible;
+}
+
+#Telefono_8862898_-_3209870099 {
+    left: 0px;
+    top: 0px;
+    position: absolute;
+    overflow: visible;
+    width: 288px;
+    white-space: nowrap;
+    text-align: right;
+    font-family: Product Sans;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 20px;
+    color: rgba(0, 0, 0, 1);
+}
+
+#Imagen_1_ga {
+    position: absolute;
+    width: 200px;
+    height: 75px;
+    left: 815px;
+    top: 12559px;
+    overflow: visible;
+}

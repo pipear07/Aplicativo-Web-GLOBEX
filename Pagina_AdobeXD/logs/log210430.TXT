@@ -1,0 +1,10 @@
+23:45:44  ROOT            INGRESO AL SISTEMA                               67.73.245.188
+23:45:47  ROOT            INGRESO AL SISTEMA                               67.73.245.188
+23:45:48  ROOT            INGRESO AL SISTEMA                               67.73.245.188
+23:45:48  ROOT            INGRESO AL SISTEMA                               67.73.245.188
+23:45:48  ROOT            INGRESO AL SISTEMA                               67.73.245.188
+23:45:48  ROOT            INGRESO AL SISTEMA                               67.73.245.188
+23:45:49  ROOT            INGRESO AL SISTEMA                               67.73.245.188
+23:45:49  ROOT            INGRESO AL SISTEMA                               67.73.245.188
+23:45:49  ROOT            INGRESO AL SISTEMA                               67.73.245.188
+23:46:56  ROOT            USUARIO INGRESO MAL LA CONTRASEÑA O USUARIO     67.73.245.188

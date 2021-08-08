@@ -1,0 +1,39 @@
+
+# BEGIN WordPress
+# The directives (lines) between "BEGIN WordPress" and "END WordPress" are
+# dynamically generated, and should only be modified via WordPress filters.
+# Any changes to the directives between these markers will be overwritten.
+
+<IfModule mod_rewrite.c>
+RewriteEngine On
+RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
+RewriteBase /
+RewriteRule ^index\.php$ - [L]
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule . /index.php [L]
+Options All -Indexes  
+Header append X-Frame-Options SAMEORIGIN
+ErrorDocument 403 /403.shtml
+</IfModule>
+# Yo le agregue el Options All -Indexes para que e bloque el juego de las carpetas
+
+# Restricted access to files
+<FilesMatch "((\.(lock|cache|db))|CHANGELOG.md|README.md|^(.*\.config|.*\.example)(.*?))$">
+	# Apache < 2.3
+	<IfModule !mod_authz_core.c>
+		Order allow,deny
+		Deny from all
+		Satisfy All
+	</IfModule>
+
+	# Apache ≥ 2.3
+	<IfModule mod_authz_core.c>
+		Require all denied
+	</IfModule>
+</FilesMatch>
+
+# END WordPress
+RewriteCond %{HTTP_HOST} ^globex2021\.com$ [OR]
+RewriteCond %{HTTP_HOST} ^www\.globex2021\.com$
+RewriteRule ^/?$ "https\:\/\/www\.globex2021\.com\/Pagina_AdobeXD\/Web_1920___28\.html" [R=301,L]

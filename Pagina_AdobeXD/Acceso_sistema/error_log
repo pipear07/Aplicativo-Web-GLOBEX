@@ -1,0 +1,12 @@
+[28-May-2021 01:36:54 America/Bogota] PHP Fatal error:  Uncaught Error: Call to undefined function start_session() in /home4/globexco/public_html/Pagina_AdobeXD/Acceso_sistema/index.php:15
+Stack trace:
+#0 {main}
+  thrown in /home4/globexco/public_html/Pagina_AdobeXD/Acceso_sistema/index.php on line 15
+[28-May-2021 01:36:55 America/Bogota] PHP Fatal error:  Uncaught Error: Call to undefined function start_session() in /home4/globexco/public_html/Pagina_AdobeXD/Acceso_sistema/index.php:15
+Stack trace:
+#0 {main}
+  thrown in /home4/globexco/public_html/Pagina_AdobeXD/Acceso_sistema/index.php on line 15
+[28-May-2021 01:36:57 America/Bogota] PHP Fatal error:  Uncaught Error: Call to undefined function start_session() in /home4/globexco/public_html/Pagina_AdobeXD/Acceso_sistema/index.php:15
+Stack trace:
+#0 {main}
+  thrown in /home4/globexco/public_html/Pagina_AdobeXD/Acceso_sistema/index.php on line 15

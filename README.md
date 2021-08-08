@@ -1,0 +1,2 @@
+# Aplicativo-Web-GLOBEX
+ Es una página web informativa sobre legislación en informática, la cual fue diseñada con un sistema de seguridad para evitar los ataques de inyección y Cross-Site Scripting. La página está hecha con Bootstrap v4, JavaScript, php, html5, CSS, Jquery y MySQL. Importando servicios de Google como el captcha y subido como un Cliente-Servidor en el siguiente enlace:www.globex2021.com

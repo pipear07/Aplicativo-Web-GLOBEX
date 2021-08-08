@@ -1,0 +1,3351 @@
+<!DOCTYPE html>
+<html>
+
+<body id="ventana">
+<head>
+    <script type="text/javascript" src="./Web_1920___28F.js"></script>
+
+<title>Globex - Legislacion en Informatica</title>
+    <head>
+        <meta charset="utf-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Web 1920 – 28</title>
+        <link rel="stylesheet" type="text/css" id="applicationStylesheet" href="Web_1920___28.css" />
+        <script id="applicationScript">
+            ///////////////////////////////////////
+            // INITIALIZATION
+            ///////////////////////////////////////
+
+            /**
+             * Functionality for scaling, showing by media query, and navigation between multiple pages on a single page. 
+             * Code subject to change.
+             **/
+
+            if (window.console == null) {
+                window["console"] = {
+                    log: function() {}
+                }
+            }; // some browsers do not set console
+
+            var Application = function() {
+                // event constants
+                this.prefix = "--web-";
+                this.NAVIGATION_CHANGE = "viewChange";
+                this.VIEW_NOT_FOUND = "viewNotFound";
+                this.VIEW_CHANGE = "viewChange";
+                this.VIEW_CHANGING = "viewChanging";
+                this.STATE_NOT_FOUND = "stateNotFound";
+                this.APPLICATION_COMPLETE = "applicationComplete";
+                this.APPLICATION_RESIZE = "applicationResize";
+                this.SIZE_STATE_NAME = "data-is-view-scaled";
+                this.STATE_NAME = this.prefix + "state";
+
+                this.lastTrigger = null;
+                this.lastView = null;
+                this.lastState = null;
+                this.lastOverlay = null;
+                this.currentView = null;
+                this.currentState = null;
+                this.currentOverlay = null;
+                this.currentQuery = {
+                    index: 0,
+                    rule: null,
+                    mediaText: null,
+                    id: null
+                };
+                this.inclusionQuery = "(min-width: 0px)";
+                this.exclusionQuery = "none and (min-width: 99999px)";
+                this.LastModifiedDateLabelName = "LastModifiedDateLabel";
+                this.viewScaleSliderId = "ViewScaleSliderInput";
+                this.pageRefreshedName = "showPageRefreshedNotification";
+                this.applicationStylesheet = null;
+                this.mediaQueryDictionary = {};
+                this.viewsDictionary = {};
+                this.addedViews = [];
+                this.views = {};
+                this.viewIds = [];
+                this.viewQueries = {};
+                this.overlays = {};
+                this.overlayIds = [];
+                this.numberOfViews = 0;
+                this.verticalPadding = 0;
+                this.horizontalPadding = 0;
+                this.stateName = null;
+                this.viewScale = 1;
+                this.viewLeft = 0;
+                this.viewTop = 0;
+                this.horizontalScrollbarsNeeded = false;
+                this.verticalScrollbarsNeeded = false;
+
+                // view settings
+                this.showUpdateNotification = false;
+                this.showNavigationControls = false;
+                this.scaleViewsToFit = false;
+                this.scaleToFitOnDoubleClick = false;
+                this.actualSizeOnDoubleClick = false;
+                this.scaleViewsOnResize = false;
+                this.navigationOnKeypress = false;
+                this.showViewName = false;
+                this.enableDeepLinking = true;
+                this.refreshPageForChanges = false;
+                this.showRefreshNotifications = true;
+
+                // view controls
+                this.scaleViewSlider = null;
+                this.lastModifiedLabel = null;
+                this.supportsPopState = false; // window.history.pushState!=null;
+                this.initialized = false;
+
+                // refresh properties
+                this.refreshDuration = 250;
+                this.lastModifiedDate = null;
+                this.refreshRequest = null;
+                this.refreshInterval = null;
+                this.refreshContent = null;
+                this.refreshContentSize = null;
+                this.refreshCheckContent = false;
+                this.refreshCheckContentSize = false;
+
+                var self = this;
+
+                self.initialize = function(event) {
+                    var view = self.getVisibleView();
+                    var views = self.getVisibleViews();
+                    if (view == null) view = self.getInitialView();
+                    self.collectViews();
+                    self.collectOverlays();
+                    self.collectMediaQueries();
+
+                    for (let index = 0; index < views.length; index++) {
+                        var view = views[index];
+                        self.setViewOptions(view);
+                        self.setViewVariables(view);
+                        self.centerView(view);
+                    }
+
+                    // sometimes the body size is 0 so we call this now and again later
+                    if (self.initialized) {
+                        window.addEventListener(self.NAVIGATION_CHANGE, self.viewChangeHandler);
+                        window.addEventListener("keyup", self.keypressHandler);
+                        window.addEventListener("keypress", self.keypressHandler);
+                        window.addEventListener("resize", self.resizeHandler);
+                        window.document.addEventListener("dblclick", self.doubleClickHandler);
+
+                        if (self.supportsPopState) {
+                            window.addEventListener('popstate', self.popStateHandler);
+                        } else {
+                            window.addEventListener('hashchange', self.hashChangeHandler);
+                        }
+
+                        // we are ready to go
+                        window.dispatchEvent(new Event(self.APPLICATION_COMPLETE));
+                    }
+
+                    if (self.initialized == false) {
+                        if (self.enableDeepLinking) {
+                            self.syncronizeViewToURL();
+                        }
+
+                        if (self.refreshPageForChanges) {
+                            self.setupRefreshForChanges();
+                        }
+
+                        self.initialized = true;
+                    }
+
+                    if (self.scaleViewsToFit) {
+                        self.viewScale = self.scaleViewToFit(view);
+
+                        if (self.viewScale < 0) {
+                            setTimeout(self.scaleViewToFit, 500, view);
+                        }
+                    } else if (view) {
+                        self.viewScale = self.getViewScaleValue(view);
+                        self.centerView(view);
+                        self.updateSliderValue(self.viewScale);
+                    } else {
+                        // no view found
+                    }
+
+                    if (self.showUpdateNotification) {
+                        self.showNotification();
+                    }
+
+                    //"addEventListener" in window ? null : window.addEventListener = window.attachEvent;
+                    //"addEventListener" in document ? null : document.addEventListener = document.attachEvent;
+                }
+
+
+                ///////////////////////////////////////
+                // AUTO REFRESH 
+                ///////////////////////////////////////
+
+                self.setupRefreshForChanges = function() {
+                    self.refreshRequest = new XMLHttpRequest();
+
+                    if (!self.refreshRequest) {
+                        return false;
+                    }
+
+                    // get document start values immediately
+                    self.requestRefreshUpdate();
+                }
+
+                /**
+                 * Attempt to check the last modified date by the headers 
+                 * or the last modified property from the byte array (experimental)
+                 **/
+                self.requestRefreshUpdate = function() {
+                    var url = document.location.href;
+                    var protocol = window.location.protocol;
+                    var method;
+
+                    try {
+
+                        if (self.refreshCheckContentSize) {
+                            self.refreshRequest.open('HEAD', url, true);
+                        } else if (self.refreshCheckContent) {
+                            self.refreshContent = document.documentElement.outerHTML;
+                            self.refreshRequest.open('GET', url, true);
+                            self.refreshRequest.responseType = "text";
+                        } else {
+
+                            // get page last modified date for the first call to compare to later
+                            if (self.lastModifiedDate == null) {
+
+                                // File system does not send headers in FF so get blob if possible
+                                if (protocol == "file:") {
+                                    self.refreshRequest.open("GET", url, true);
+                                    self.refreshRequest.responseType = "blob";
+                                } else {
+                                    self.refreshRequest.open("HEAD", url, true);
+                                    self.refreshRequest.responseType = "blob";
+                                }
+
+                                self.refreshRequest.onload = self.refreshOnLoadOnceHandler;
+
+                                // In some browsers (Chrome & Safari) this error occurs at send: 
+                                // 
+                                // Chrome - Access to XMLHttpRequest at 'file:///index.html' from origin 'null' 
+                                // has been blocked by CORS policy: 
+                                // Cross origin requests are only supported for protocol schemes: 
+                                // http, data, chrome, chrome-extension, https.
+                                // 
+                                // Safari - XMLHttpRequest cannot load file:///Users/user/Public/index.html. Cross origin requests are only supported for HTTP.
+                                // 
+                                // Solution is to run a local server, set local permissions or test in another browser
+                                self.refreshRequest.send(null);
+
+                                // In MS browsers the following behavior occurs possibly due to an AJAX call to check last modified date: 
+                                // 
+                                // DOM7011: The code on this page disabled back and forward caching.
+
+                                // In Brave (Chrome) error when on the server
+                                // index.js:221 HEAD https://www.example.com/ net::ERR_INSUFFICIENT_RESOURCES
+                                // self.refreshRequest.send(null);
+
+                            } else {
+                                self.refreshRequest = new XMLHttpRequest();
+                                self.refreshRequest.onreadystatechange = self.refreshHandler;
+                                self.refreshRequest.ontimeout = function() {
+                                    self.log("Couldn't find page to check for updates");
+                                }
+
+                                var method;
+                                if (protocol == "file:") {
+                                    method = "GET";
+                                } else {
+                                    method = "HEAD";
+                                }
+
+                                //refreshRequest.open('HEAD', url, true);
+                                self.refreshRequest.open(method, url, true);
+                                self.refreshRequest.responseType = "blob";
+                                self.refreshRequest.send(null);
+                            }
+                        }
+                    } catch (error) {
+                        self.log("Refresh failed for the following reason:")
+                        self.log(error);
+                    }
+                }
+
+                self.refreshHandler = function() {
+                    var contentSize;
+
+                    try {
+
+                        if (self.refreshRequest.readyState === XMLHttpRequest.DONE) {
+
+                            if (self.refreshRequest.status === 2 ||
+                                self.refreshRequest.status === 200) {
+                                var pageChanged = false;
+
+                                self.updateLastModifiedLabel();
+
+                                if (self.refreshCheckContentSize) {
+                                    var lastModifiedHeader = self.refreshRequest.getResponseHeader("Last-Modified");
+                                    contentSize = self.refreshRequest.getResponseHeader("Content-Length");
+                                    //lastModifiedDate = refreshRequest.getResponseHeader("Last-Modified");
+                                    var headers = self.refreshRequest.getAllResponseHeaders();
+                                    var hasContentHeader = headers.indexOf("Content-Length") != -1;
+
+                                    if (hasContentHeader) {
+                                        contentSize = self.refreshRequest.getResponseHeader("Content-Length");
+
+                                        // size has not been set yet
+                                        if (self.refreshContentSize == null) {
+                                            self.refreshContentSize = contentSize;
+                                            // exit and let interval call this method again
+                                            return;
+                                        }
+
+                                        if (contentSize != self.refreshContentSize) {
+                                            pageChanged = true;
+                                        }
+                                    }
+                                } else if (self.refreshCheckContent) {
+
+                                    if (self.refreshRequest.responseText != self.refreshContent) {
+                                        pageChanged = true;
+                                    }
+                                } else {
+                                    lastModifiedHeader = self.getLastModified(self.refreshRequest);
+
+                                    if (self.lastModifiedDate != lastModifiedHeader) {
+                                        self.log("lastModifiedDate:" + self.lastModifiedDate + ",lastModifiedHeader:" + lastModifiedHeader);
+                                        pageChanged = true;
+                                    }
+
+                                }
+
+
+                                if (pageChanged) {
+                                    clearInterval(self.refreshInterval);
+                                    self.refreshUpdatedPage();
+                                    return;
+                                }
+
+                            } else {
+                                self.log('There was a problem with the request.');
+                            }
+
+                        }
+                    } catch (error) {
+                        //console.log('Caught Exception: ' + error);
+                    }
+                }
+
+                self.refreshOnLoadOnceHandler = function(event) {
+
+                    // get the last modified date
+                    if (self.refreshRequest.response) {
+                        self.lastModifiedDate = self.getLastModified(self.refreshRequest);
+
+                        if (self.lastModifiedDate != null) {
+
+                            if (self.refreshInterval == null) {
+                                self.refreshInterval = setInterval(self.requestRefreshUpdate, self.refreshDuration);
+                            }
+                        } else {
+                            self.log("Could not get last modified date from the server");
+                        }
+                    }
+                }
+
+                self.refreshUpdatedPage = function() {
+                    if (self.showRefreshNotifications) {
+                        var date = new Date().setTime((new Date().getTime() + 10000));
+                        document.cookie = encodeURIComponent(self.pageRefreshedName) + "=true" + "; max-age=6000;" + " path=/";
+                    }
+
+                    document.location.reload(true);
+                }
+
+                self.showNotification = function(duration) {
+                    var notificationID = self.pageRefreshedName + "ID";
+                    var notification = document.getElementById(notificationID);
+                    if (duration == null) duration = 4000;
+
+                    if (notification != null) {
+                        return;
+                    }
+
+                    notification = document.createElement("div");
+                    notification.id = notificationID;
+                    notification.textContent = "PAGE UPDATED";
+                    var styleRule = ""
+                    styleRule = "position: fixed; padding: 7px 16px 6px 16px; font-family: Arial, sans-serif; font-size: 10px; font-weight: bold; left: 50%;";
+                    styleRule += "top: 20px; background-color: rgba(0,0,0,.5); border-radius: 12px; color:rgb(235, 235, 235); transition: all 2s linear;";
+                    styleRule += "transform: translateX(-50%); letter-spacing: .5px; filter: drop-shadow(2px 2px 6px rgba(0, 0, 0, .1))";
+                    notification.setAttribute("style", styleRule);
+
+                    notification.className = "PageRefreshedClass";
+
+                    document.body.appendChild(notification);
+
+                    setTimeout(function() {
+                        notification.style.opacity = "0";
+                        notification.style.filter = "drop-shadow( 0px 0px 0px rgba(0,0,0, .5))";
+                        setTimeout(function() {
+                            notification.parentNode.removeChild(notification);
+                        }, duration)
+                    }, duration);
+
+                    document.cookie = encodeURIComponent(self.pageRefreshedName) + "=; max-age=1; path=/";
+                }
+
+                /**
+                 * Get the last modified date from the header 
+                 * or file object after request has been received
+                 **/
+                self.getLastModified = function(request) {
+                    var date;
+
+                    // file protocol - FILE object with last modified property
+                    if (request.response && request.response.lastModified) {
+                        date = request.response.lastModified;
+                    }
+
+                    // http protocol - check headers
+                    if (date == null) {
+                        date = request.getResponseHeader("Last-Modified");
+                    }
+
+                    return date;
+                }
+
+                self.updateLastModifiedLabel = function() {
+                    var labelValue = "";
+
+                    if (self.lastModifiedLabel == null) {
+                        self.lastModifiedLabel = document.getElementById("LastModifiedLabel");
+                    }
+
+                    if (self.lastModifiedLabel) {
+                        var seconds = parseInt(((new Date().getTime() - Date.parse(document.lastModified)) / 1000 / 60) * 100 + "");
+                        var minutes = 0;
+                        var hours = 0;
+
+                        if (seconds < 60) {
+                            seconds = Math.floor(seconds / 10) * 10;
+                            labelValue = seconds + " seconds";
+                        } else {
+                            minutes = parseInt((seconds / 60) + "");
+
+                            if (minutes > 60) {
+                                hours = parseInt((seconds / 60 / 60) + "");
+                                labelValue += hours == 1 ? " hour" : " hours";
+                            } else {
+                                labelValue = minutes + "";
+                                labelValue += minutes == 1 ? " minute" : " minutes";
+                            }
+                        }
+
+                        if (seconds < 10) {
+                            labelValue = "Updated now";
+                        } else {
+                            labelValue = "Updated " + labelValue + " ago";
+                        }
+
+                        if (self.lastModifiedLabel.firstElementChild) {
+                            self.lastModifiedLabel.firstElementChild.textContent = labelValue;
+
+                        } else if ("textContent" in self.lastModifiedLabel) {
+                            self.lastModifiedLabel.textContent = labelValue;
+                        }
+                    }
+                }
+
+                self.getShortString = function(string, length) {
+                    if (length == null) length = 30;
+                    string = string != null ? string.substr(0, length).replace(/\n/g, "") : "[String is null]";
+                    return string;
+                }
+
+                self.getShortNumber = function(value, places) {
+                    if (places == null || places < 1) places = 4;
+                    value = Math.round(value * Math.pow(10, places)) / Math.pow(10, places);
+                    return value;
+                }
+
+                ///////////////////////////////////////
+                // NAVIGATION CONTROLS
+                ///////////////////////////////////////
+
+                self.updateViewLabel = function() {
+                    var viewNavigationLabel = document.getElementById("ViewNavigationLabel");
+                    var view = self.getVisibleView();
+                    var viewIndex = view ? self.getViewIndex(view) : -1;
+                    var viewName = view ? self.getViewPreferenceValue(view, self.prefix + "view-name") : null;
+                    var viewId = view ? view.id : null;
+
+                    if (viewNavigationLabel && view) {
+                        if (viewName && viewName.indexOf('"') != -1) {
+                            viewName = viewName.replace(/"/g, "");
+                        }
+
+                        if (self.showViewName) {
+                            viewNavigationLabel.textContent = viewName;
+                            self.setTooltip(viewNavigationLabel, viewIndex + 1 + " of " + self.numberOfViews);
+                        } else {
+                            viewNavigationLabel.textContent = viewIndex + 1 + " of " + self.numberOfViews;
+                            self.setTooltip(viewNavigationLabel, viewName);
+                        }
+
+                    }
+                }
+
+                self.updateURL = function(view) {
+                    view = view == null ? self.getVisibleView() : view;
+                    var viewId = view ? view.id : null
+                    var viewFragment = view ? "#" + viewId : null;
+
+                    if (viewId && self.viewIds.length > 1 && self.enableDeepLinking) {
+
+                        if (self.supportsPopState == false) {
+                            self.setFragment(viewId);
+                        } else {
+                            if (viewFragment != window.location.hash) {
+
+                                if (window.location.hash == null) {
+                                    window.history.replaceState({
+                                        name: viewId
+                                    }, null, viewFragment);
+                                } else {
+                                    window.history.pushState({
+                                        name: viewId
+                                    }, null, viewFragment);
+                                }
+                            }
+                        }
+                    }
+                }
+
+                self.updateURLState = function(view, stateName) {
+                    stateName = view && (stateName == "" || stateName == null) ? self.getStateNameByViewId(view.id) : stateName;
+
+                    if (self.supportsPopState == false) {
+                        self.setFragment(stateName);
+                    } else {
+                        if (stateName != window.location.hash) {
+
+                            if (window.location.hash == null) {
+                                window.history.replaceState({
+                                    name: view.viewId
+                                }, null, stateName);
+                            } else {
+                                window.history.pushState({
+                                    name: view.viewId
+                                }, null, stateName);
+                            }
+                        }
+                    }
+                }
+
+                self.setFragment = function(value) {
+                    window.location.hash = "#" + value;
+                }
+
+                self.setTooltip = function(element, value) {
+                    // setting the tooltip in edge causes a page crash on hover
+                    if (/Edge/.test(navigator.userAgent)) {
+                        return;
+                    }
+
+                    if ("title" in element) {
+                        element.title = value;
+                    }
+                }
+
+                self.getStylesheetRules = function(styleSheet) {
+                    try {
+                        if (styleSheet) return styleSheet.cssRules || styleSheet.rules;
+
+                        return document.styleSheets[0]["cssRules"] || document.styleSheets[0]["rules"];
+                    } catch (error) {
+                        // ERRORS:
+                        // SecurityError: The operation is insecure.
+                        // Errors happen when script loads before stylesheet or loading an external css locally
+
+                        // InvalidAccessError: A parameter or an operation is not supported by the underlying object
+                        // Place script after stylesheet
+
+                        console.log(error);
+                        if (error.toString().indexOf("The operation is insecure") != -1) {
+                            console.log("Load the stylesheet before the script or load the stylesheet inline until it can be loaded on a server")
+                        }
+                        return [];
+                    }
+                }
+
+                /**
+                 * If single page application hide all of the views. 
+                 * @param {Number} selectedIndex if provided shows the view at index provided
+                 **/
+                self.hideViews = function(selectedIndex, animation) {
+                    var rules = self.getStylesheetRules();
+                    var queryIndex = 0;
+                    var numberOfRules = rules != null ? rules.length : 0;
+
+                    // loop through rules and hide media queries except selected
+                    for (var i = 0; i < numberOfRules; i++) {
+                        var rule = rules[i];
+
+                        if (rule.media != null) {
+
+                            if (queryIndex == selectedIndex) {
+                                self.currentQuery.mediaText = rule.conditionText;
+                                self.currentQuery.index = selectedIndex;
+                                self.currentQuery.rule = rule;
+                                self.enableMediaQuery(rule);
+                            } else {
+                                if (animation) {
+                                    self.fadeOut(rule)
+                                } else {
+                                    self.disableMediaQuery(rule);
+                                }
+                            }
+
+                            queryIndex++;
+                        }
+                    }
+
+                    self.numberOfViews = queryIndex;
+                    self.updateViewLabel();
+                    self.updateURL();
+
+                    self.dispatchViewChange();
+
+                    var view = self.getVisibleView();
+                    var viewIndex = view ? self.getViewIndex(view) : -1;
+
+                    return viewIndex == selectedIndex ? view : null;
+                }
+
+                /**
+                 * Hide view
+                 * @param {Object} view element to hide
+                 **/
+                self.hideView = function(view) {
+                    var rule = view ? self.mediaQueryDictionary[view.id] : null;
+
+                    if (rule) {
+                        self.disableMediaQuery(rule);
+                    }
+                }
+
+                /**
+                 * Hide overlay
+                 * @param {Object} overlay element to hide
+                 **/
+                self.hideOverlay = function(overlay) {
+                    var rule = overlay ? self.mediaQueryDictionary[overlay.id] : null;
+
+                    if (rule) {
+                        self.disableMediaQuery(rule);
+
+                        //if (self.showByMediaQuery) {
+                        overlay.style.display = "none";
+                        //}
+                    }
+                }
+
+                /**
+                 * Show the view by media query. Does not hide current views
+                 * Sets view options by default
+                 * @param {Object} view element to show
+                 * @param {Boolean} setViewOptions sets view options if null or true
+                 */
+                self.showViewByMediaQuery = function(view, setViewOptions) {
+                    var id = view ? view.id : null;
+                    var query = id ? self.mediaQueryDictionary[id] : null;
+                    var isOverlay = view ? self.isOverlay(view) : false;
+                    setViewOptions = setViewOptions == null ? true : setViewOptions;
+
+                    if (query) {
+                        self.enableMediaQuery(query);
+
+                        if (isOverlay && view && setViewOptions) {
+                            self.setViewVariables(null, view);
+                        } else {
+                            if (view && setViewOptions) self.setViewOptions(view);
+                            if (view && setViewOptions) self.setViewVariables(view);
+                        }
+                    }
+                }
+
+                /**
+                 * Show the view. Does not hide current views
+                 */
+                self.showView = function(view, setViewOptions) {
+                    var id = view ? view.id : null;
+                    var query = id ? self.mediaQueryDictionary[id] : null;
+                    var display = null;
+                    setViewOptions = setViewOptions == null ? true : setViewOptions;
+
+                    if (query) {
+                        self.enableMediaQuery(query);
+                        if (view == null) view = self.getVisibleView();
+                        if (view && setViewOptions) self.setViewOptions(view);
+                    } else if (id) {
+                        display = window.getComputedStyle(view).getPropertyValue("display");
+                        if (display == "" || display == "none") {
+                            view.style.display = "block";
+                        }
+                    }
+
+                    if (view) {
+                        if (self.currentView != null) {
+                            self.lastView = self.currentView;
+                        }
+
+                        self.currentView = view;
+                    }
+                }
+
+                self.showViewById = function(id, setViewOptions) {
+                    var view = id ? self.getViewById(id) : null;
+
+                    if (view) {
+                        self.showView(view);
+                        return;
+                    }
+
+                    self.log("View not found '" + id + "'");
+                }
+
+                self.getElementView = function(element) {
+                    var view = element;
+                    var viewFound = false;
+
+                    while (viewFound == false || view == null) {
+                        if (view && self.viewsDictionary[view.id]) {
+                            return view;
+                        }
+                        view = view.parentNode;
+                    }
+                }
+
+                /**
+                 * Show overlay over view
+                 * @param {Event | HTMLElement} event event or html element with styles applied
+                 * @param {String} id id of view or view reference
+                 * @param {Number} x x location
+                 * @param {Number} y y location
+                 */
+                self.showOverlay = function(event, id, x, y) {
+                    var overlay = id && typeof id === 'string' ? self.getViewById(id) : id ? id : null;
+                    var query = overlay ? self.mediaQueryDictionary[overlay.id] : null;
+                    var centerHorizontally = false;
+                    var centerVertically = false;
+                    var anchorLeft = false;
+                    var anchorTop = false;
+                    var anchorRight = false;
+                    var anchorBottom = false;
+                    var display = null;
+                    var reparent = true;
+                    var view = null;
+
+                    if (overlay == null || overlay == false) {
+                        self.log("Overlay not found, '" + id + "'");
+                        return;
+                    }
+
+                    // get enter animation - event target must have css variables declared
+                    if (event) {
+                        var button = event.currentTarget || event; // can be event or htmlelement
+                        var buttonComputedStyles = getComputedStyle(button);
+                        var actionTargetValue = buttonComputedStyles.getPropertyValue(self.prefix + "action-target").trim();
+                        var animation = buttonComputedStyles.getPropertyValue(self.prefix + "animation").trim();
+                        var isAnimated = animation != "";
+                        var targetType = buttonComputedStyles.getPropertyValue(self.prefix + "action-type").trim();
+                        var actionTarget = self.application ? null : self.getElement(actionTargetValue);
+                        var actionTargetStyles = actionTarget ? actionTarget.style : null;
+
+                        if (actionTargetStyles) {
+                            actionTargetStyles.setProperty("animation", animation);
+                        }
+
+                        if ("stopImmediatePropagation" in event) {
+                            event.stopImmediatePropagation();
+                        }
+                    }
+
+                    if (self.application == false || targetType == "page") {
+                        document.location.href = "./" + actionTargetValue;
+                        return;
+                    }
+
+                    // remove any current overlays
+                    if (self.currentOverlay) {
+
+                        // act as switch if same button
+                        if (self.currentOverlay == actionTarget || self.currentOverlay == null) {
+                            if (self.lastTrigger == button) {
+                                self.removeOverlay(isAnimated);
+                                return;
+                            }
+                        } else {
+                            self.removeOverlay(isAnimated);
+                        }
+                    }
+
+                    if (reparent) {
+                        view = self.getElementView(button);
+                        if (view) {
+                            view.appendChild(overlay);
+                        }
+                    }
+
+                    if (query) {
+                        //self.setElementAnimation(overlay, null);
+                        //overlay.style.animation = animation;
+                        self.enableMediaQuery(query);
+
+                        var display = overlay && overlay.style.display;
+
+                        if (overlay && display == "" || display == "none") {
+                            overlay.style.display = "block";
+                            //self.setViewOptions(overlay);
+                        }
+
+                        // add animation defined in event target style declaration
+                        if (animation && self.supportAnimations) {
+                            self.fadeIn(overlay, false, animation);
+                        }
+                    } else if (id) {
+
+                        display = window.getComputedStyle(overlay).getPropertyValue("display");
+
+                        if (display == "" || display == "none") {
+                            overlay.style.display = "block";
+                        }
+
+                        // add animation defined in event target style declaration
+                        if (animation && self.supportAnimations) {
+                            self.fadeIn(overlay, false, animation);
+                        }
+                    }
+
+                    // do not set x or y position if centering
+                    var horizontal = self.prefix + "center-horizontally";
+                    var vertical = self.prefix + "center-vertically";
+                    var style = overlay.style;
+                    var transform = [];
+
+                    centerHorizontally = self.getIsStyleDefined(id, horizontal) ? self.getViewPreferenceBoolean(overlay, horizontal) : false;
+                    centerVertically = self.getIsStyleDefined(id, vertical) ? self.getViewPreferenceBoolean(overlay, vertical) : false;
+                    anchorLeft = self.getIsStyleDefined(id, "left");
+                    anchorRight = self.getIsStyleDefined(id, "right");
+                    anchorTop = self.getIsStyleDefined(id, "top");
+                    anchorBottom = self.getIsStyleDefined(id, "bottom");
+
+
+                    if (self.viewsDictionary[overlay.id] && self.viewsDictionary[overlay.id].styleDeclaration) {
+                        style = self.viewsDictionary[overlay.id].styleDeclaration.style;
+                    }
+
+                    if (centerHorizontally) {
+                        style.left = "50%";
+                        style.transformOrigin = "0 0";
+                        transform.push("translateX(-50%)");
+                    } else if (anchorRight && anchorLeft) {
+                        style.left = x + "px";
+                    } else if (anchorRight) {
+                        //style.right = x + "px";
+                    } else {
+                        style.left = x + "px";
+                    }
+
+                    if (centerVertically) {
+                        style.top = "50%";
+                        transform.push("translateY(-50%)");
+                        style.transformOrigin = "0 0";
+                    } else if (anchorTop && anchorBottom) {
+                        style.top = y + "px";
+                    } else if (anchorBottom) {
+                        //style.bottom = y + "px";
+                    } else {
+                        style.top = y + "px";
+                    }
+
+                    if (transform.length) {
+                        style.transform = transform.join(" ");
+                    }
+
+                    self.currentOverlay = overlay;
+                    self.lastTrigger = button;
+                }
+
+                self.goBack = function() {
+                    if (self.currentOverlay) {
+                        self.removeOverlay();
+                    } else if (self.lastView) {
+                        self.goToView(self.lastView.id);
+                    }
+                }
+
+                self.removeOverlay = function(animate) {
+                    var overlay = self.currentOverlay;
+                    animate = animate === false ? false : true;
+
+                    if (overlay) {
+                        var style = overlay.style;
+
+                        if (style.animation && self.supportAnimations && animate) {
+                            self.reverseAnimation(overlay, true);
+
+                            var duration = self.getAnimationDuration(style.animation, true);
+
+                            setTimeout(function() {
+                                self.setElementAnimation(overlay, null);
+                                self.hideOverlay(overlay);
+                                self.currentOverlay = null;
+                            }, duration);
+                        } else {
+                            self.setElementAnimation(overlay, null);
+                            self.hideOverlay(overlay);
+                            self.currentOverlay = null;
+                        }
+                    }
+                }
+
+                /**
+                 * Reverse the animation and hide after
+                 * @param {Object} target element with animation
+                 * @param {Boolean} hide hide after animation ends
+                 */
+                self.reverseAnimation = function(target, hide) {
+                    var lastAnimation = null;
+                    var style = target.style;
+
+                    style.animationPlayState = "paused";
+                    lastAnimation = style.animation;
+                    style.animation = null;
+                    style.animationPlayState = "paused";
+
+                    if (hide) {
+                        //target.addEventListener("animationend", self.animationEndHideHandler);
+
+                        var duration = self.getAnimationDuration(lastAnimation, true);
+                        var isOverlay = self.isOverlay(target);
+
+                        setTimeout(function() {
+                            self.setElementAnimation(target, null);
+
+                            if (isOverlay) {
+                                self.hideOverlay(target);
+                            } else {
+                                self.hideView(target);
+                            }
+                        }, duration);
+                    }
+
+                    setTimeout(function() {
+                        style.animation = lastAnimation;
+                        style.animationPlayState = "paused";
+                        style.animationDirection = "reverse";
+                        style.animationPlayState = "running";
+                    }, 30);
+                }
+
+                self.animationEndHandler = function(event) {
+                    var target = event.currentTarget;
+                    self.dispatchEvent(new Event(event.type));
+                }
+
+                self.isOverlay = function(view) {
+                    var result = view ? self.getViewPreferenceBoolean(view, self.prefix + "is-overlay") : false;
+
+                    return result;
+                }
+
+                self.animationEndHideHandler = function(event) {
+                    var target = event.currentTarget;
+                    self.setViewVariables(null, target);
+                    self.hideView(target);
+                    target.removeEventListener("animationend", self.animationEndHideHandler);
+                }
+
+                self.animationEndShowHandler = function(event) {
+                    var target = event.currentTarget;
+                    target.removeEventListener("animationend", self.animationEndShowHandler);
+                }
+
+                self.setViewOptions = function(view) {
+
+                    if (view) {
+                        self.minimumScale = self.getViewPreferenceValue(view, self.prefix + "minimum-scale");
+                        self.maximumScale = self.getViewPreferenceValue(view, self.prefix + "maximum-scale");
+                        self.scaleViewsToFit = self.getViewPreferenceBoolean(view, self.prefix + "scale-to-fit");
+                        self.scaleToFitType = self.getViewPreferenceValue(view, self.prefix + "scale-to-fit-type");
+                        self.scaleToFitOnDoubleClick = self.getViewPreferenceBoolean(view, self.prefix + "scale-on-double-click");
+                        self.actualSizeOnDoubleClick = self.getViewPreferenceBoolean(view, self.prefix + "actual-size-on-double-click");
+                        self.scaleViewsOnResize = self.getViewPreferenceBoolean(view, self.prefix + "scale-on-resize");
+                        self.enableScaleUp = self.getViewPreferenceBoolean(view, self.prefix + "enable-scale-up");
+                        self.centerHorizontally = self.getViewPreferenceBoolean(view, self.prefix + "center-horizontally");
+                        self.centerVertically = self.getViewPreferenceBoolean(view, self.prefix + "center-vertically");
+                        self.navigationOnKeypress = self.getViewPreferenceBoolean(view, self.prefix + "navigate-on-keypress");
+                        self.showViewName = self.getViewPreferenceBoolean(view, self.prefix + "show-view-name");
+                        self.refreshPageForChanges = self.getViewPreferenceBoolean(view, self.prefix + "refresh-for-changes");
+                        self.refreshPageForChangesInterval = self.getViewPreferenceValue(view, self.prefix + "refresh-interval");
+                        self.showNavigationControls = self.getViewPreferenceBoolean(view, self.prefix + "show-navigation-controls");
+                        self.scaleViewSlider = self.getViewPreferenceBoolean(view, self.prefix + "show-scale-controls");
+                        self.enableDeepLinking = self.getViewPreferenceBoolean(view, self.prefix + "enable-deep-linking");
+                        self.singlePageApplication = self.getViewPreferenceBoolean(view, self.prefix + "application");
+                        self.showByMediaQuery = self.getViewPreferenceBoolean(view, self.prefix + "show-by-media-query");
+                        self.showUpdateNotification = document.cookie != "" ? document.cookie.indexOf(self.pageRefreshedName) != -1 : false;
+                        self.imageComparisonDuration = self.getViewPreferenceValue(view, self.prefix + "image-comparison-duration");
+                        self.supportAnimations = self.getViewPreferenceBoolean(view, self.prefix + "enable-animations", true);
+
+                        if (self.scaleViewsToFit) {
+                            var newScaleValue = self.scaleViewToFit(view);
+
+                            if (newScaleValue < 0) {
+                                setTimeout(self.scaleViewToFit, 500, view);
+                            }
+                        } else {
+                            self.viewScale = self.getViewScaleValue(view);
+                            self.viewToFitWidthScale = self.getViewFitToViewportWidthScale(view, self.enableScaleUp)
+                            self.viewToFitHeightScale = self.getViewFitToViewportScale(view, self.enableScaleUp);
+                            self.updateSliderValue(self.viewScale);
+                        }
+
+                        if (self.imageComparisonDuration != null) {
+                            // todo
+                        }
+
+                        if (self.refreshPageForChangesInterval != null) {
+                            self.refreshDuration = Number(self.refreshPageForChangesInterval);
+                        }
+                    }
+                }
+
+                self.previousView = function(event) {
+                    var rules = self.getStylesheetRules();
+                    var view = self.getVisibleView()
+                    var index = view ? self.getViewIndex(view) : -1;
+                    var prevQueryIndex = index != -1 ? index - 1 : self.currentQuery.index - 1;
+                    var queryIndex = 0;
+                    var numberOfRules = rules != null ? rules.length : 0;
+
+                    if (event) {
+                        event.stopImmediatePropagation();
+                    }
+
+                    if (prevQueryIndex < 0) {
+                        return;
+                    }
+
+                    // loop through rules and hide media queries except selected
+                    for (var i = 0; i < numberOfRules; i++) {
+                        var rule = rules[i];
+
+                        if (rule.media != null) {
+
+                            if (queryIndex == prevQueryIndex) {
+                                self.currentQuery.mediaText = rule.conditionText;
+                                self.currentQuery.index = prevQueryIndex;
+                                self.currentQuery.rule = rule;
+                                self.enableMediaQuery(rule);
+                                self.updateViewLabel();
+                                self.updateURL();
+                                self.dispatchViewChange();
+                            } else {
+                                self.disableMediaQuery(rule);
+                            }
+
+                            queryIndex++;
+                        }
+                    }
+                }
+
+                self.nextView = function(event) {
+                    var rules = self.getStylesheetRules();
+                    var view = self.getVisibleView();
+                    var index = view ? self.getViewIndex(view) : -1;
+                    var nextQueryIndex = index != -1 ? index + 1 : self.currentQuery.index + 1;
+                    var queryIndex = 0;
+                    var numberOfRules = rules != null ? rules.length : 0;
+                    var numberOfMediaQueries = self.getNumberOfMediaRules();
+
+                    if (event) {
+                        event.stopImmediatePropagation();
+                    }
+
+                    if (nextQueryIndex >= numberOfMediaQueries) {
+                        return;
+                    }
+
+                    // loop through rules and hide media queries except selected
+                    for (var i = 0; i < numberOfRules; i++) {
+                        var rule = rules[i];
+
+                        if (rule.media != null) {
+
+                            if (queryIndex == nextQueryIndex) {
+                                self.currentQuery.mediaText = rule.conditionText;
+                                self.currentQuery.index = nextQueryIndex;
+                                self.currentQuery.rule = rule;
+                                self.enableMediaQuery(rule);
+                                self.updateViewLabel();
+                                self.updateURL();
+                                self.dispatchViewChange();
+                            } else {
+                                self.disableMediaQuery(rule);
+                            }
+
+                            queryIndex++;
+                        }
+                    }
+                }
+
+                /**
+                 * Enables a view via media query
+                 */
+                self.enableMediaQuery = function(rule) {
+
+                    try {
+                        rule.media.mediaText = self.inclusionQuery;
+                    } catch (error) {
+                        //self.log(error);
+                        rule.conditionText = self.inclusionQuery;
+                    }
+                }
+
+                self.disableMediaQuery = function(rule) {
+
+                    try {
+                        rule.media.mediaText = self.exclusionQuery;
+                    } catch (error) {
+                        rule.conditionText = self.exclusionQuery;
+                    }
+                }
+
+                self.dispatchViewChange = function() {
+                    try {
+                        var event = new Event(self.NAVIGATION_CHANGE);
+                        window.dispatchEvent(event);
+                    } catch (error) {
+                        // In IE 11: Object doesn't support this action
+                    }
+                }
+
+                self.getNumberOfMediaRules = function() {
+                    var rules = self.getStylesheetRules();
+                    var numberOfRules = rules ? rules.length : 0;
+                    var numberOfQueries = 0;
+
+                    for (var i = 0; i < numberOfRules; i++) {
+                        if (rules[i].media != null) {
+                            numberOfQueries++;
+                        }
+                    }
+
+                    return numberOfQueries;
+                }
+
+                /////////////////////////////////////////
+                // VIEW SCALE 
+                /////////////////////////////////////////
+
+                self.sliderChangeHandler = function(event) {
+                    var value = self.getShortNumber(event.currentTarget.value / 100);
+                    var view = self.getVisibleView();
+                    self.setViewScaleValue(view, false, value, true);
+                }
+
+                self.updateSliderValue = function(scale) {
+                    var slider = document.getElementById(self.viewScaleSliderId);
+                    var tooltip = parseInt(scale * 100 + "") + "%";
+                    var inputType;
+                    var inputValue;
+
+                    if (slider) {
+                        inputValue = self.getShortNumber(scale * 100);
+                        if (inputValue != slider["value"]) {
+                            slider["value"] = inputValue;
+                        }
+                        inputType = slider.getAttributeNS(null, "type");
+
+                        if (inputType != "range") {
+                            // input range is not supported
+                            slider.style.display = "none";
+                        }
+
+                        self.setTooltip(slider, tooltip);
+                    }
+                }
+
+                self.viewChangeHandler = function(event) {
+                    var view = self.getVisibleView();
+                    var matrix = view ? getComputedStyle(view).transform : null;
+
+                    if (matrix) {
+                        self.viewScale = self.getViewScaleValue(view);
+
+                        var scaleNeededToFit = self.getViewFitToViewportScale(view);
+                        var isViewLargerThanViewport = scaleNeededToFit < 1;
+
+                        // scale large view to fit if scale to fit is enabled
+                        if (self.scaleViewsToFit) {
+                            self.scaleViewToFit(view);
+                        } else {
+                            self.updateSliderValue(self.viewScale);
+                        }
+                    }
+                }
+
+                self.getViewScaleValue = function(view) {
+                    var matrix = getComputedStyle(view).transform;
+
+                    if (matrix) {
+                        var matrixArray = matrix.replace("matrix(", "").split(",");
+                        var scaleX = parseFloat(matrixArray[0]);
+                        var scaleY = parseFloat(matrixArray[3]);
+                        var scale = Math.min(scaleX, scaleY);
+                    }
+
+                    return scale;
+                }
+
+                /**
+                 * Scales view to scale. 
+                 * @param {Object} view view to scale. views are in views array
+                 * @param {Boolean} scaleToFit set to true to scale to fit. set false to use desired scale value
+                 * @param {Number} desiredScale scale to define. not used if scale to fit is false
+                 * @param {Boolean} isSliderChange indicates if slider is callee
+                 */
+                self.setViewScaleValue = function(view, scaleToFit, desiredScale, isSliderChange) {
+                    var enableScaleUp = self.enableScaleUp;
+                    var scaleToFitType = self.scaleToFitType;
+                    var minimumScale = self.minimumScale;
+                    var maximumScale = self.maximumScale;
+                    var hasMinimumScale = !isNaN(minimumScale) && minimumScale != "";
+                    var hasMaximumScale = !isNaN(maximumScale) && maximumScale != "";
+                    var scaleNeededToFit = self.getViewFitToViewportScale(view, enableScaleUp);
+                    var scaleNeededToFitWidth = self.getViewFitToViewportWidthScale(view, enableScaleUp);
+                    var scaleNeededToFitHeight = self.getViewFitToViewportHeightScale(view, enableScaleUp);
+                    var scaleToFitFull = self.getViewFitToViewportScale(view, true);
+                    var scaleToFitFullWidth = self.getViewFitToViewportWidthScale(view, true);
+                    var scaleToFitFullHeight = self.getViewFitToViewportHeightScale(view, true);
+                    var scaleToWidth = scaleToFitType == "width";
+                    var scaleToHeight = scaleToFitType == "height";
+                    var shrunkToFit = false;
+                    var topPosition = null;
+                    var leftPosition = null;
+                    var translateY = null;
+                    var translateX = null;
+                    var transformValue = "";
+                    var canCenterVertically = true;
+                    var canCenterHorizontally = true;
+                    var style = view.style;
+
+                    if (view && self.viewsDictionary[view.id] && self.viewsDictionary[view.id].styleDeclaration) {
+                        style = self.viewsDictionary[view.id].styleDeclaration.style;
+                    }
+
+                    if (scaleToFit && isSliderChange != true) {
+                        if (scaleToFitType == "fit" || scaleToFitType == "") {
+                            desiredScale = scaleNeededToFit;
+                        } else if (scaleToFitType == "width") {
+                            desiredScale = scaleNeededToFitWidth;
+                        } else if (scaleToFitType == "height") {
+                            desiredScale = scaleNeededToFitHeight;
+                        }
+                    } else {
+                        if (isNaN(desiredScale)) {
+                            desiredScale = 1;
+                        }
+                    }
+
+                    self.updateSliderValue(desiredScale);
+
+                    // scale to fit width
+                    if (scaleToWidth && scaleToHeight == false) {
+                        canCenterVertically = scaleNeededToFitHeight >= scaleNeededToFitWidth;
+                        canCenterHorizontally = scaleNeededToFitWidth >= 1 && enableScaleUp == false;
+
+                        if (isSliderChange) {
+                            canCenterHorizontally = desiredScale < scaleToFitFullWidth;
+                        } else if (scaleToFit) {
+                            desiredScale = scaleNeededToFitWidth;
+                        }
+
+                        if (hasMinimumScale) {
+                            desiredScale = Math.max(desiredScale, Number(minimumScale));
+                        }
+
+                        if (hasMaximumScale) {
+                            desiredScale = Math.min(desiredScale, Number(maximumScale));
+                        }
+
+                        desiredScale = self.getShortNumber(desiredScale);
+
+                        canCenterHorizontally = self.canCenterHorizontally(view, "width", enableScaleUp, desiredScale, minimumScale, maximumScale);
+                        canCenterVertically = self.canCenterVertically(view, "width", enableScaleUp, desiredScale, minimumScale, maximumScale);
+
+                        if (desiredScale > 1 && (enableScaleUp || isSliderChange)) {
+                            transformValue = "scale(" + desiredScale + ")";
+                        } else if (desiredScale >= 1 && enableScaleUp == false) {
+                            transformValue = "scale(" + 1 + ")";
+                        } else {
+                            transformValue = "scale(" + desiredScale + ")";
+                        }
+
+                        if (self.centerVertically) {
+                            if (canCenterVertically) {
+                                translateY = "-50%";
+                                topPosition = "50%";
+                            } else {
+                                translateY = "0";
+                                topPosition = "0";
+                            }
+
+                            if (style.top != topPosition) {
+                                style.top = topPosition + "";
+                            }
+
+                            if (canCenterVertically) {
+                                transformValue += " translateY(" + translateY + ")";
+                            }
+                        }
+
+                        if (self.centerHorizontally) {
+                            if (canCenterHorizontally) {
+                                translateX = "-50%";
+                                leftPosition = "50%";
+                            } else {
+                                translateX = "0";
+                                leftPosition = "0";
+                            }
+
+                            if (style.left != leftPosition) {
+                                style.left = leftPosition + "";
+                            }
+
+                            if (canCenterHorizontally) {
+                                transformValue += " translateX(" + translateX + ")";
+                            }
+                        }
+
+                        style.transformOrigin = "0 0";
+                        style.transform = transformValue;
+
+                        self.viewScale = desiredScale;
+                        self.viewToFitWidthScale = scaleNeededToFitWidth;
+                        self.viewToFitHeightScale = scaleNeededToFitHeight;
+                        self.viewLeft = leftPosition;
+                        self.viewTop = topPosition;
+
+                        return desiredScale;
+                    }
+
+                    // scale to fit height
+                    if (scaleToHeight && scaleToWidth == false) {
+                        //canCenterVertically = scaleNeededToFitHeight>=scaleNeededToFitWidth;
+                        //canCenterHorizontally = scaleNeededToFitHeight<=scaleNeededToFitWidth && enableScaleUp==false;
+                        canCenterVertically = scaleNeededToFitHeight >= scaleNeededToFitWidth;
+                        canCenterHorizontally = scaleNeededToFitWidth >= 1 && enableScaleUp == false;
+
+                        if (isSliderChange) {
+                            canCenterHorizontally = desiredScale < scaleToFitFullHeight;
+                        } else if (scaleToFit) {
+                            desiredScale = scaleNeededToFitHeight;
+                        }
+
+                        if (hasMinimumScale) {
+                            desiredScale = Math.max(desiredScale, Number(minimumScale));
+                        }
+
+                        if (hasMaximumScale) {
+                            desiredScale = Math.min(desiredScale, Number(maximumScale));
+                            //canCenterVertically = desiredScale>=scaleNeededToFitHeight && enableScaleUp==false;
+                        }
+
+                        desiredScale = self.getShortNumber(desiredScale);
+
+                        canCenterHorizontally = self.canCenterHorizontally(view, "height", enableScaleUp, desiredScale, minimumScale, maximumScale);
+                        canCenterVertically = self.canCenterVertically(view, "height", enableScaleUp, desiredScale, minimumScale, maximumScale);
+
+                        if (desiredScale > 1 && (enableScaleUp || isSliderChange)) {
+                            transformValue = "scale(" + desiredScale + ")";
+                        } else if (desiredScale >= 1 && enableScaleUp == false) {
+                            transformValue = "scale(" + 1 + ")";
+                        } else {
+                            transformValue = "scale(" + desiredScale + ")";
+                        }
+
+                        if (self.centerHorizontally) {
+                            if (canCenterHorizontally) {
+                                translateX = "-50%";
+                                leftPosition = "50%";
+                            } else {
+                                translateX = "0";
+                                leftPosition = "0";
+                            }
+
+                            if (style.left != leftPosition) {
+                                style.left = leftPosition + "";
+                            }
+
+                            if (canCenterHorizontally) {
+                                transformValue += " translateX(" + translateX + ")";
+                            }
+                        }
+
+                        if (self.centerVertically) {
+                            if (canCenterVertically) {
+                                translateY = "-50%";
+                                topPosition = "50%";
+                            } else {
+                                translateY = "0";
+                                topPosition = "0";
+                            }
+
+                            if (style.top != topPosition) {
+                                style.top = topPosition + "";
+                            }
+
+                            if (canCenterVertically) {
+                                transformValue += " translateY(" + translateY + ")";
+                            }
+                        }
+
+                        style.transformOrigin = "0 0";
+                        style.transform = transformValue;
+
+                        self.viewScale = desiredScale;
+                        self.viewToFitWidthScale = scaleNeededToFitWidth;
+                        self.viewToFitHeightScale = scaleNeededToFitHeight;
+                        self.viewLeft = leftPosition;
+                        self.viewTop = topPosition;
+
+                        return scaleNeededToFitHeight;
+                    }
+
+                    if (scaleToFitType == "fit") {
+                        //canCenterVertically = scaleNeededToFitHeight>=scaleNeededToFitWidth;
+                        //canCenterHorizontally = scaleNeededToFitWidth>=scaleNeededToFitHeight;
+                        canCenterVertically = scaleNeededToFitHeight >= scaleNeededToFit;
+                        canCenterHorizontally = scaleNeededToFitWidth >= scaleNeededToFit;
+
+                        if (hasMinimumScale) {
+                            desiredScale = Math.max(desiredScale, Number(minimumScale));
+                        }
+
+                        desiredScale = self.getShortNumber(desiredScale);
+
+                        if (isSliderChange || scaleToFit == false) {
+                            canCenterVertically = scaleToFitFullHeight >= desiredScale;
+                            canCenterHorizontally = desiredScale < scaleToFitFullWidth;
+                        } else if (scaleToFit) {
+                            desiredScale = scaleNeededToFit;
+                        }
+
+                        transformValue = "scale(" + desiredScale + ")";
+
+                        //canCenterHorizontally = self.canCenterHorizontally(view, "fit", false, desiredScale);
+                        //canCenterVertically = self.canCenterVertically(view, "fit", false, desiredScale);
+
+                        if (self.centerVertically) {
+                            if (canCenterVertically) {
+                                translateY = "-50%";
+                                topPosition = "50%";
+                            } else {
+                                translateY = "0";
+                                topPosition = "0";
+                            }
+
+                            if (style.top != topPosition) {
+                                style.top = topPosition + "";
+                            }
+
+                            if (canCenterVertically) {
+                                transformValue += " translateY(" + translateY + ")";
+                            }
+                        }
+
+                        if (self.centerHorizontally) {
+                            if (canCenterHorizontally) {
+                                translateX = "-50%";
+                                leftPosition = "50%";
+                            } else {
+                                translateX = "0";
+                                leftPosition = "0";
+                            }
+
+                            if (style.left != leftPosition) {
+                                style.left = leftPosition + "";
+                            }
+
+                            if (canCenterHorizontally) {
+                                transformValue += " translateX(" + translateX + ")";
+                            }
+                        }
+
+                        style.transformOrigin = "0 0";
+                        style.transform = transformValue;
+
+                        self.viewScale = desiredScale;
+                        self.viewToFitWidthScale = scaleNeededToFitWidth;
+                        self.viewToFitHeightScale = scaleNeededToFitHeight;
+                        self.viewLeft = leftPosition;
+                        self.viewTop = topPosition;
+
+                        self.updateSliderValue(desiredScale);
+
+                        return desiredScale;
+                    }
+
+                    if (scaleToFitType == "default" || scaleToFitType == "") {
+                        desiredScale = 1;
+
+                        if (hasMinimumScale) {
+                            desiredScale = Math.max(desiredScale, Number(minimumScale));
+                        }
+                        if (hasMaximumScale) {
+                            desiredScale = Math.min(desiredScale, Number(maximumScale));
+                        }
+
+                        canCenterHorizontally = self.canCenterHorizontally(view, "none", false, desiredScale, minimumScale, maximumScale);
+                        canCenterVertically = self.canCenterVertically(view, "none", false, desiredScale, minimumScale, maximumScale);
+
+                        if (self.centerVertically) {
+                            if (canCenterVertically) {
+                                translateY = "-50%";
+                                topPosition = "50%";
+                            } else {
+                                translateY = "0";
+                                topPosition = "0";
+                            }
+
+                            if (style.top != topPosition) {
+                                style.top = topPosition + "";
+                            }
+
+                            if (canCenterVertically) {
+                                transformValue += " translateY(" + translateY + ")";
+                            }
+                        }
+
+                        if (self.centerHorizontally) {
+                            if (canCenterHorizontally) {
+                                translateX = "-50%";
+                                leftPosition = "50%";
+                            } else {
+                                translateX = "0";
+                                leftPosition = "0";
+                            }
+
+                            if (style.left != leftPosition) {
+                                style.left = leftPosition + "";
+                            }
+
+                            if (canCenterHorizontally) {
+                                transformValue += " translateX(" + translateX + ")";
+                            } else {
+                                transformValue += " translateX(" + 0 + ")";
+                            }
+                        }
+
+                        style.transformOrigin = "0 0";
+                        style.transform = transformValue;
+
+
+                        self.viewScale = desiredScale;
+                        self.viewToFitWidthScale = scaleNeededToFitWidth;
+                        self.viewToFitHeightScale = scaleNeededToFitHeight;
+                        self.viewLeft = leftPosition;
+                        self.viewTop = topPosition;
+
+                        self.updateSliderValue(desiredScale);
+
+                        return desiredScale;
+                    }
+                }
+
+                /**
+                 * Returns true if view can be centered horizontally
+                 * @param {HTMLElement} view view
+                 * @param {String} type type of scaling - width, height, all, none
+                 * @param {Boolean} scaleUp if scale up enabled 
+                 * @param {Number} scale target scale value 
+                 */
+                self.canCenterHorizontally = function(view, type, scaleUp, scale, minimumScale, maximumScale) {
+                    var scaleNeededToFit = self.getViewFitToViewportScale(view, scaleUp);
+                    var scaleNeededToFitHeight = self.getViewFitToViewportHeightScale(view, scaleUp);
+                    var scaleNeededToFitWidth = self.getViewFitToViewportWidthScale(view, scaleUp);
+                    var canCenter = false;
+                    var minScale;
+
+                    type = type == null ? "none" : type;
+                    scale = scale == null ? scale : scaleNeededToFitWidth;
+                    scaleUp = scaleUp == null ? false : scaleUp;
+
+                    if (type == "width") {
+
+                        if (scaleUp && maximumScale == null) {
+                            canCenter = false;
+                        } else if (scaleNeededToFitWidth >= 1) {
+                            canCenter = true;
+                        }
+                    } else if (type == "height") {
+                        minScale = Math.min(1, scaleNeededToFitHeight);
+                        if (minimumScale != "" && maximumScale != "") {
+                            minScale = Math.max(minimumScale, Math.min(maximumScale, scaleNeededToFitHeight));
+                        } else {
+                            if (minimumScale != "") {
+                                minScale = Math.max(minimumScale, scaleNeededToFitHeight);
+                            }
+                            if (maximumScale != "") {
+                                minScale = Math.max(minimumScale, Math.min(maximumScale, scaleNeededToFitHeight));
+                            }
+                        }
+
+                        if (scaleUp && maximumScale == "") {
+                            canCenter = false;
+                        } else if (scaleNeededToFitWidth >= minScale) {
+                            canCenter = true;
+                        }
+                    } else if (type == "fit") {
+                        canCenter = scaleNeededToFitWidth >= scaleNeededToFit;
+                    } else {
+                        if (scaleUp) {
+                            canCenter = false;
+                        } else if (scaleNeededToFitWidth >= 1) {
+                            canCenter = true;
+                        }
+                    }
+
+                    self.horizontalScrollbarsNeeded = canCenter;
+
+                    return canCenter;
+                }
+
+                /**
+                 * Returns true if view can be centered horizontally
+                 * @param {HTMLElement} view view to scale
+                 * @param {String} type type of scaling
+                 * @param {Boolean} scaleUp if scale up enabled 
+                 * @param {Number} scale target scale value 
+                 */
+                self.canCenterVertically = function(view, type, scaleUp, scale, minimumScale, maximumScale) {
+                    var scaleNeededToFit = self.getViewFitToViewportScale(view, scaleUp);
+                    var scaleNeededToFitWidth = self.getViewFitToViewportWidthScale(view, scaleUp);
+                    var scaleNeededToFitHeight = self.getViewFitToViewportHeightScale(view, scaleUp);
+                    var canCenter = false;
+                    var minScale;
+
+                    type = type == null ? "none" : type;
+                    scale = scale == null ? 1 : scale;
+                    scaleUp = scaleUp == null ? false : scaleUp;
+
+                    if (type == "width") {
+                        canCenter = scaleNeededToFitHeight >= scaleNeededToFitWidth;
+                    } else if (type == "height") {
+                        minScale = Math.max(minimumScale, Math.min(maximumScale, scaleNeededToFit));
+                        canCenter = scaleNeededToFitHeight >= minScale;
+                    } else if (type == "fit") {
+                        canCenter = scaleNeededToFitHeight >= scaleNeededToFit;
+                    } else {
+                        if (scaleUp) {
+                            canCenter = false;
+                        } else if (scaleNeededToFitHeight >= 1) {
+                            canCenter = true;
+                        }
+                    }
+
+                    self.verticalScrollbarsNeeded = canCenter;
+
+                    return canCenter;
+                }
+
+                self.getViewFitToViewportScale = function(view, scaleUp) {
+                    var enableScaleUp = scaleUp;
+                    var availableWidth = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
+                    var availableHeight = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
+                    var elementWidth = parseFloat(getComputedStyle(view, "style").width);
+                    var elementHeight = parseFloat(getComputedStyle(view, "style").height);
+                    var newScale = 1;
+
+                    // if element is not added to the document computed values are NaN
+                    if (isNaN(elementWidth) || isNaN(elementHeight)) {
+                        return newScale;
+                    }
+
+                    availableWidth -= self.horizontalPadding;
+                    availableHeight -= self.verticalPadding;
+
+                    if (enableScaleUp) {
+                        newScale = Math.min(availableHeight / elementHeight, availableWidth / elementWidth);
+                    } else if (elementWidth > availableWidth || elementHeight > availableHeight) {
+                        newScale = Math.min(availableHeight / elementHeight, availableWidth / elementWidth);
+                    }
+
+                    return newScale;
+                }
+
+                self.getViewFitToViewportWidthScale = function(view, scaleUp) {
+                    // need to get browser viewport width when element
+                    var isParentWindow = view && view.parentNode && view.parentNode === document.body;
+                    var enableScaleUp = scaleUp;
+                    var availableWidth = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
+                    var elementWidth = parseFloat(getComputedStyle(view, "style").width);
+                    var newScale = 1;
+
+                    // if element is not added to the document computed values are NaN
+                    if (isNaN(elementWidth)) {
+                        return newScale;
+                    }
+
+                    availableWidth -= self.horizontalPadding;
+
+                    if (enableScaleUp) {
+                        newScale = availableWidth / elementWidth;
+                    } else if (elementWidth > availableWidth) {
+                        newScale = availableWidth / elementWidth;
+                    }
+
+                    return newScale;
+                }
+
+                self.getViewFitToViewportHeightScale = function(view, scaleUp) {
+                    var enableScaleUp = scaleUp;
+                    var availableHeight = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
+                    var elementHeight = parseFloat(getComputedStyle(view, "style").height);
+                    var newScale = 1;
+
+                    // if element is not added to the document computed values are NaN
+                    if (isNaN(elementHeight)) {
+                        return newScale;
+                    }
+
+                    availableHeight -= self.verticalPadding;
+
+                    if (enableScaleUp) {
+                        newScale = availableHeight / elementHeight;
+                    } else if (elementHeight > availableHeight) {
+                        newScale = availableHeight / elementHeight;
+                    }
+
+                    return newScale;
+                }
+
+                self.keypressHandler = function(event) {
+                    var rightKey = 39;
+                    var leftKey = 37;
+
+                    // listen for both events 
+                    if (event.type == "keypress") {
+                        window.removeEventListener("keyup", self.keypressHandler);
+                    } else {
+                        window.removeEventListener("keypress", self.keypressHandler);
+                    }
+
+                    if (self.showNavigationControls) {
+                        if (self.navigationOnKeypress) {
+                            if (event.keyCode == rightKey) {
+                                self.nextView();
+                            }
+                            if (event.keyCode == leftKey) {
+                                self.previousView();
+                            }
+                        }
+                    } else if (self.navigationOnKeypress) {
+                        if (event.keyCode == rightKey) {
+                            self.nextView();
+                        }
+                        if (event.keyCode == leftKey) {
+                            self.previousView();
+                        }
+                    }
+                }
+
+                ///////////////////////////////////
+                // GENERAL FUNCTIONS
+                ///////////////////////////////////
+
+                self.getViewById = function(id) {
+                    id = id ? id.replace("#", "") : "";
+                    var view = self.viewIds.indexOf(id) != -1 && self.getElement(id);
+                    return view;
+                }
+
+                self.getViewIds = function() {
+                    var viewIds = self.getViewPreferenceValue(document.body, self.prefix + "view-ids");
+                    var viewId = null;
+
+                    viewIds = viewIds != null && viewIds != "" ? viewIds.split(",") : [];
+
+                    if (viewIds.length == 0) {
+                        viewId = self.getViewPreferenceValue(document.body, self.prefix + "view-id");
+                        viewIds = viewId ? [viewId] : [];
+                    }
+
+                    return viewIds;
+                }
+
+                self.getInitialViewId = function() {
+                    var viewId = self.getViewPreferenceValue(document.body, self.prefix + "view-id");
+                    return viewId;
+                }
+
+                self.getApplicationStylesheet = function() {
+                    var stylesheetId = self.getViewPreferenceValue(document.body, self.prefix + "stylesheet-id");
+                    self.applicationStylesheet = document.getElementById("applicationStylesheet");
+                    return self.applicationStylesheet.sheet;
+                }
+
+                self.getVisibleView = function() {
+                    var viewIds = self.getViewIds();
+
+                    for (var i = 0; i < viewIds.length; i++) {
+                        var viewId = viewIds[i].replace(/[\#?\.?](.*)/, "$" + "1");
+                        var view = self.getElement(viewId);
+                        var postName = "_Class";
+
+                        if (view == null && viewId && viewId.lastIndexOf(postName) != -1) {
+                            view = self.getElement(viewId.replace(postName, ""));
+                        }
+
+                        if (view) {
+                            var display = getComputedStyle(view).display;
+
+                            if (display == "block" || display == "flex") {
+                                return view;
+                            }
+                        }
+                    }
+
+                    return null;
+                }
+
+                self.getVisibleViews = function() {
+                    var viewIds = self.getViewIds();
+                    var views = [];
+
+                    for (var i = 0; i < viewIds.length; i++) {
+                        var viewId = viewIds[i].replace(/[\#?\.?](.*)/, "$" + "1");
+                        var view = self.getElement(viewId);
+                        var postName = "_Class";
+
+                        if (view == null && viewId && viewId.lastIndexOf(postName) != -1) {
+                            view = self.getElement(viewId.replace(postName, ""));
+                        }
+
+                        if (view) {
+                            var display = getComputedStyle(view).display;
+
+                            if (display == "none") {
+                                continue;
+                            }
+
+                            if (display == "block" || display == "flex") {
+                                views.push(view);
+                            }
+                        }
+                    }
+
+                    return views;
+                }
+
+                self.getStateNameByViewId = function(id) {
+                    var state = self.viewsDictionary[id];
+                    return state && state.stateName;
+                }
+
+                self.getMatchingViews = function(ids) {
+                    var views = self.addedViews.slice(0);
+                    var matchingViews = [];
+
+                    if (self.showByMediaQuery) {
+                        for (let index = 0; index < views.length; index++) {
+                            var viewId = views[index];
+                            var state = self.viewsDictionary[viewId];
+                            var rule = state && state.rule;
+                            var matchResults = window.matchMedia(rule.conditionText);
+                            var view = self.views[viewId];
+
+                            if (matchResults.matches) {
+                                if (ids == true) {
+                                    matchingViews.push(viewId);
+                                } else {
+                                    matchingViews.push(view);
+                                }
+                            }
+                        }
+                    }
+
+                    return matchingViews;
+                }
+
+                self.ruleMatchesQuery = function(rule) {
+                    var result = window.matchMedia(rule.conditionText);
+                    return result.matches;
+                }
+
+                self.getViewsByStateName = function(stateName, matchQuery) {
+                    var views = self.addedViews.slice(0);
+                    var matchingViews = [];
+
+                    if (self.showByMediaQuery) {
+
+                        // find state name
+                        for (let index = 0; index < views.length; index++) {
+                            var viewId = views[index];
+                            var state = self.viewsDictionary[viewId];
+                            var rule = state.rule;
+                            var mediaRule = state.mediaRule;
+                            var view = self.views[viewId];
+                            var viewStateName = self.getStyleRuleValue(mediaRule, self.STATE_NAME, state);
+                            var stateFoundAtt = view.getAttribute(self.STATE_NAME) == state;
+                            var matchesResults = false;
+
+                            if (viewStateName == stateName) {
+                                if (matchQuery) {
+                                    matchesResults = self.ruleMatchesQuery(rule);
+
+                                    if (matchesResults) {
+                                        matchingViews.push(view);
+                                    }
+                                } else {
+                                    matchingViews.push(view);
+                                }
+                            }
+                        }
+                    }
+
+                    return matchingViews;
+                }
+
+                self.getInitialView = function() {
+                    var viewId = self.getInitialViewId();
+                    viewId = viewId.replace(/[\#?\.?](.*)/, "$" + "1");
+                    var view = self.getElement(viewId);
+                    var postName = "_Class";
+
+                    if (view == null && viewId && viewId.lastIndexOf(postName) != -1) {
+                        view = self.getElement(viewId.replace(postName, ""));
+                    }
+
+                    return view;
+                }
+
+                self.getViewIndex = function(view) {
+                    var viewIds = self.getViewIds();
+                    var id = view ? view.id : null;
+                    var index = id && viewIds ? viewIds.indexOf(id) : -1;
+
+                    return index;
+                }
+
+                self.syncronizeViewToURL = function() {
+                    var fragment = self.getHashFragment();
+
+                    if (self.showByMediaQuery) {
+                        var stateName = fragment;
+
+                        if (stateName == null || stateName == "") {
+                            var initialView = self.getInitialView();
+                            stateName = initialView ? self.getStateNameByViewId(initialView.id) : null;
+                        }
+
+                        self.showMediaQueryViewsByState(stateName);
+                        return;
+                    }
+
+                    var view = self.getViewById(fragment);
+                    var index = view ? self.getViewIndex(view) : 0;
+                    if (index == -1) index = 0;
+                    var currentView = self.hideViews(index);
+
+                    if (self.supportsPopState && currentView) {
+
+                        if (fragment == null) {
+                            window.history.replaceState({
+                                name: currentView.id
+                            }, null, "#" + currentView.id);
+                        } else {
+                            window.history.pushState({
+                                name: currentView.id
+                            }, null, "#" + currentView.id);
+                        }
+                    }
+
+                    self.setViewVariables(view);
+                    return view;
+                }
+
+                /**
+                 * Set the currentView or currentOverlay properties and set the lastView or lastOverlay properties
+                 */
+                self.setViewVariables = function(view, overlay, parentView) {
+                    if (view) {
+                        if (self.currentView) {
+                            self.lastView = self.currentView;
+                        }
+                        self.currentView = view;
+                    }
+
+                    if (overlay) {
+                        if (self.currentOverlay) {
+                            self.lastOverlay = self.currentOverlay;
+                        }
+                        self.currentOverlay = overlay;
+                    }
+                }
+
+                self.getViewPreferenceBoolean = function(view, property, altValue) {
+                    var computedStyle = window.getComputedStyle(view);
+                    var value = computedStyle.getPropertyValue(property);
+                    var type = typeof value;
+
+                    if (value == "true" || (type == "string" && value.indexOf("true") != -1)) {
+                        return true;
+                    } else if (value == "" && arguments.length == 3) {
+                        return altValue;
+                    }
+
+                    return false;
+                }
+
+                self.getViewPreferenceValue = function(view, property, defaultValue) {
+                    var value = window.getComputedStyle(view).getPropertyValue(property);
+
+                    if (value === undefined) {
+                        return defaultValue;
+                    }
+
+                    value = value.replace(/^[\s\"]*/, "");
+                    value = value.replace(/[\s\"]*$/, "");
+                    value = value.replace(/^[\s"]*(.*?)[\s"]*$/, function(match, capture) {
+                        return capture;
+                    });
+
+                    return value;
+                }
+
+                self.getStyleRuleValue = function(cssRule, property) {
+                    var value = cssRule ? cssRule.style.getPropertyValue(property) : null;
+
+                    if (value === undefined) {
+                        return null;
+                    }
+
+                    value = value.replace(/^[\s\"]*/, "");
+                    value = value.replace(/[\s\"]*$/, "");
+                    value = value.replace(/^[\s"]*(.*?)[\s"]*$/, function(match, capture) {
+                        return capture;
+                    });
+
+                    return value;
+                }
+
+                /**
+                 * Get the first defined value of property. Returns empty string if not defined
+                 * @param {String} id id of element
+                 * @param {String} property 
+                 */
+                self.getCSSPropertyValueForElement = function(id, property) {
+                    var styleSheets = document.styleSheets;
+                    var numOfStylesheets = styleSheets.length;
+                    var values = [];
+                    var selectorIDText = "#" + id;
+                    var selectorClassText = "." + id + "_Class";
+                    var value;
+
+                    for (var i = 0; i < numOfStylesheets; i++) {
+                        var styleSheet = styleSheets[i];
+                        var cssRules = self.getStylesheetRules(styleSheet);
+                        var numOfCSSRules = cssRules.length;
+                        var cssRule;
+
+                        for (var j = 0; j < numOfCSSRules; j++) {
+                            cssRule = cssRules[j];
+
+                            if (cssRule.media) {
+                                var mediaRules = cssRule.cssRules;
+                                var numOfMediaRules = mediaRules ? mediaRules.length : 0;
+
+                                for (var k = 0; k < numOfMediaRules; k++) {
+                                    var mediaRule = mediaRules[k];
+
+                                    if (mediaRule.selectorText == selectorIDText || mediaRule.selectorText == selectorClassText) {
+
+                                        if (mediaRule.style && mediaRule.style.getPropertyValue(property) != "") {
+                                            value = mediaRule.style.getPropertyValue(property);
+                                            values.push(value);
+                                        }
+                                    }
+                                }
+                            } else {
+
+                                if (cssRule.selectorText == selectorIDText || cssRule.selectorText == selectorClassText) {
+                                    if (cssRule.style && cssRule.style.getPropertyValue(property) != "") {
+                                        value = cssRule.style.getPropertyValue(property);
+                                        values.push(value);
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    return values.pop();
+                }
+
+                self.getIsStyleDefined = function(id, property) {
+                    var value = self.getCSSPropertyValueForElement(id, property);
+                    return value !== undefined && value != "";
+                }
+
+                self.collectViews = function() {
+                    var viewIds = self.getViewIds();
+
+                    for (let index = 0; index < viewIds.length; index++) {
+                        const id = viewIds[index];
+                        const view = self.getElement(id);
+                        self.views[id] = view;
+                    }
+
+                    self.viewIds = viewIds;
+                }
+
+                self.collectOverlays = function() {
+                    var viewIds = self.getViewIds();
+                    var ids = [];
+
+                    for (let index = 0; index < viewIds.length; index++) {
+                        const id = viewIds[index];
+                        const view = self.getViewById(id);
+                        const isOverlay = view && self.isOverlay(view);
+
+                        if (isOverlay) {
+                            ids.push(id);
+                            self.overlays[id] = view;
+                        }
+                    }
+
+                    self.overlayIds = ids;
+                }
+
+                self.collectMediaQueries = function() {
+                    var viewIds = self.getViewIds();
+                    var styleSheet = self.getApplicationStylesheet();
+                    var cssRules = self.getStylesheetRules(styleSheet);
+                    var numOfCSSRules = cssRules ? cssRules.length : 0;
+                    var cssRule;
+                    var id = viewIds.length ? viewIds[0] : ""; // single view
+                    var selectorIDText = "#" + id;
+                    var selectorClassText = "." + id + "_Class";
+                    var viewsNotFound = viewIds.slice();
+                    var viewsFound = [];
+                    var selectorText = null;
+                    var property = self.prefix + "view-id";
+                    var stateName = self.prefix + "state";
+                    var stateValue;
+
+                    for (var j = 0; j < numOfCSSRules; j++) {
+                        cssRule = cssRules[j];
+
+                        if (cssRule.media) {
+                            var mediaRules = cssRule.cssRules;
+                            var numOfMediaRules = mediaRules ? mediaRules.length : 0;
+                            var mediaViewInfoFound = false;
+                            var mediaId = null;
+
+                            for (var k = 0; k < numOfMediaRules; k++) {
+                                var mediaRule = mediaRules[k];
+
+                                selectorText = mediaRule.selectorText;
+
+                                if (selectorText == ".mediaViewInfo" && mediaViewInfoFound == false) {
+
+                                    mediaId = self.getStyleRuleValue(mediaRule, property);
+                                    stateValue = self.getStyleRuleValue(mediaRule, stateName);
+
+                                    selectorIDText = "#" + mediaId;
+                                    selectorClassText = "." + mediaId + "_Class";
+
+                                    // prevent duplicates from load and domcontentloaded events
+                                    if (self.addedViews.indexOf(mediaId) == -1) {
+                                        self.addView(mediaId, cssRule, mediaRule, stateValue);
+                                    }
+
+                                    viewsFound.push(mediaId);
+
+                                    if (viewsNotFound.indexOf(mediaId) != -1) {
+                                        viewsNotFound.splice(viewsNotFound.indexOf(mediaId));
+                                    }
+
+                                    mediaViewInfoFound = true;
+                                }
+
+                                if (selectorIDText == selectorText || selectorClassText == selectorText) {
+                                    var styleObject = self.viewsDictionary[mediaId];
+                                    if (styleObject) {
+                                        styleObject.styleDeclaration = mediaRule;
+                                    }
+                                    break;
+                                }
+                            }
+                        } else {
+                            selectorText = cssRule.selectorText;
+
+                            if (selectorText == null) continue;
+
+                            selectorText = selectorText.replace(/[#|\s|*]?/g, "");
+
+                            if (viewIds.indexOf(selectorText) != -1) {
+                                self.addView(selectorText, cssRule, null, stateValue);
+
+                                if (viewsNotFound.indexOf(selectorText) != -1) {
+                                    viewsNotFound.splice(viewsNotFound.indexOf(selectorText));
+                                }
+
+                                break;
+                            }
+                        }
+                    }
+
+                    if (viewsNotFound.length) {
+                        console.log("Could not find the following views:" + viewsNotFound.join(",") + "");
+                        console.log("Views found:" + viewsFound.join(",") + "");
+                    }
+                }
+
+                /**
+                 * Adds a view. A view object contains the id of the view and the style rule
+                 * Use enableMediaQuery(rule) to enable
+                 * An array of view names are in self.addedViews array
+                 */
+                self.addView = function(viewId, cssRule, mediaRule, stateName) {
+                    var state = {
+                        name: viewId,
+                        rule: cssRule,
+                        id: viewId,
+                        mediaRule: mediaRule,
+                        stateName: stateName
+                    };
+                    self.addedViews.push(viewId);
+                    self.viewsDictionary[viewId] = state;
+                    self.mediaQueryDictionary[viewId] = cssRule;
+                }
+
+                self.hasView = function(name) {
+
+                    if (self.addedViews.indexOf(name) != -1) {
+                        return true;
+                    }
+                    return false;
+                }
+
+                /**
+                 * Go to view by id. Views are added in addView()
+                 * @param {String} id id of view in current
+                 * @param {Boolean} maintainPreviousState if true then do not hide other views
+                 * @param {String} parent id of parent view
+                 */
+                self.goToView = function(id, maintainPreviousState, parent) {
+                    var state = self.viewsDictionary[id];
+
+                    if (state) {
+                        if (maintainPreviousState == false || maintainPreviousState == null) {
+                            self.hideViews();
+                        }
+                        self.enableMediaQuery(state.rule);
+                        self.updateViewLabel();
+                        self.updateURL();
+                    } else {
+                        var event = new Event(self.STATE_NOT_FOUND);
+                        self.stateName = id;
+                        window.dispatchEvent(event);
+                    }
+                }
+
+                /**
+                 * Go to the view in the event targets CSS variable
+                 */
+                self.goToTargetView = function(event) {
+                    var button = event.currentTarget;
+                    var buttonComputedStyles = getComputedStyle(button);
+                    var actionTargetValue = buttonComputedStyles.getPropertyValue(self.prefix + "action-target").trim();
+                    var animation = buttonComputedStyles.getPropertyValue(self.prefix + "animation").trim();
+                    var targetType = buttonComputedStyles.getPropertyValue(self.prefix + "action-type").trim();
+                    var targetView = self.application ? null : self.getElement(actionTargetValue);
+                    var targetState = targetView ? self.getStateNameByViewId(targetView.id) : null;
+                    var actionTargetStyles = targetView ? targetView.style : null;
+                    var state = self.viewsDictionary[actionTargetValue];
+
+                    // navigate to page
+                    if (self.application == false || targetType == "page") {
+                        document.location.href = "./" + actionTargetValue;
+                        return;
+                    }
+
+                    // if view is found
+                    if (targetView) {
+
+                        if (self.currentOverlay) {
+                            self.removeOverlay(false);
+                        }
+
+                        if (self.showByMediaQuery) {
+                            var stateName = targetState;
+
+                            if (stateName == null || stateName == "") {
+                                var initialView = self.getInitialView();
+                                stateName = initialView ? self.getStateNameByViewId(initialView.id) : null;
+                            }
+                            self.showMediaQueryViewsByState(stateName, event);
+                            return;
+                        }
+
+                        // add animation set in event target style declaration
+                        if (animation && self.supportAnimations) {
+                            self.crossFade(self.currentView, targetView, false, animation);
+                        } else {
+                            self.setViewVariables(self.currentView);
+                            self.hideViews();
+                            self.enableMediaQuery(state.rule);
+                            self.scaleViewIfNeeded(targetView);
+                            self.centerView(targetView);
+                            self.updateViewLabel();
+                            self.updateURL();
+                        }
+                    } else {
+                        var stateEvent = new Event(self.STATE_NOT_FOUND);
+                        self.stateName = name;
+                        window.dispatchEvent(stateEvent);
+                    }
+
+                    event.stopImmediatePropagation();
+                }
+
+                /**
+                 * Cross fade between views
+                 **/
+                self.crossFade = function(from, to, update, animation) {
+                    var targetIndex = to.parentNode
+                    var fromIndex = Array.prototype.slice.call(from.parentElement.children).indexOf(from);
+                    var toIndex = Array.prototype.slice.call(to.parentElement.children).indexOf(to);
+
+                    if (from.parentNode == to.parentNode) {
+                        var reverse = self.getReverseAnimation(animation);
+                        var duration = self.getAnimationDuration(animation, true);
+
+                        // if target view is above (higher index)
+                        // then fade in target view 
+                        // and after fade in then hide previous view instantly
+                        if (fromIndex < toIndex) {
+                            self.setElementAnimation(from, null);
+                            self.setElementAnimation(to, null);
+                            self.showViewByMediaQuery(to);
+                            self.fadeIn(to, update, animation);
+
+                            setTimeout(function() {
+                                self.setElementAnimation(to, null);
+                                self.setElementAnimation(from, null);
+                                self.hideView(from);
+                                self.updateURL();
+                                self.setViewVariables(to);
+                                self.updateViewLabel();
+                            }, duration)
+                        }
+                        // if target view is on bottom
+                        // then show target view instantly 
+                        // and fade out current view
+                        else if (fromIndex > toIndex) {
+                            self.setElementAnimation(to, null);
+                            self.setElementAnimation(from, null);
+                            self.showViewByMediaQuery(to);
+                            self.fadeOut(from, update, reverse);
+
+                            setTimeout(function() {
+                                self.setElementAnimation(to, null);
+                                self.setElementAnimation(from, null);
+                                self.hideView(from);
+                                self.updateURL();
+                                self.setViewVariables(to);
+                            }, duration)
+                        }
+                    }
+                }
+
+                self.fadeIn = function(element, update, animation) {
+                    self.showViewByMediaQuery(element);
+
+                    if (update) {
+                        self.updateURL(element);
+
+                        element.addEventListener("animationend", function(event) {
+                            element.style.animation = null;
+                            self.setViewVariables(element);
+                            self.updateViewLabel();
+                            element.removeEventListener("animationend", arguments.callee);
+                        });
+                    }
+
+                    self.setElementAnimation(element, null);
+
+                    element.style.animation = animation;
+                }
+
+                self.fadeOutCurrentView = function(animation, update) {
+                    if (self.currentView) {
+                        self.fadeOut(self.currentView, update, animation);
+                    }
+                    if (self.currentOverlay) {
+                        self.fadeOut(self.currentOverlay, update, animation);
+                    }
+                }
+
+                self.fadeOut = function(element, update, animation) {
+                    if (update) {
+                        element.addEventListener("animationend", function(event) {
+                            element.style.animation = null;
+                            self.hideView(element);
+                            element.removeEventListener("animationend", arguments.callee);
+                        });
+                    }
+
+                    element.style.animationPlayState = "paused";
+                    element.style.animation = animation;
+                    element.style.animationPlayState = "running";
+                }
+
+                self.getReverseAnimation = function(animation) {
+                    if (animation && animation.indexOf("reverse") == -1) {
+                        animation += " reverse";
+                    }
+
+                    return animation;
+                }
+
+                /**
+                 * Get duration in animation string
+                 * @param {String} animation animation value
+                 * @param {Boolean} inMilliseconds length in milliseconds if true
+                 */
+                self.getAnimationDuration = function(animation, inMilliseconds) {
+                    var duration = 0;
+                    var expression = /.+(\d\.\d)s.+/;
+
+                    if (animation && animation.match(expression)) {
+                        duration = parseFloat(animation.replace(expression, "$" + "1"));
+                        if (duration && inMilliseconds) duration = duration * 1000;
+                    }
+
+                    return duration;
+                }
+
+                self.setElementAnimation = function(element, animation, priority) {
+                    element.style.setProperty("animation", animation, "important");
+                }
+
+                self.getElement = function(id) {
+                    var elementId = id ? id.trim() : id;
+                    var element = elementId ? document.getElementById(elementId) : null;
+
+                    return element;
+                }
+
+                self.getElementByClass = function(className) {
+                    className = className ? className.trim() : className;
+                    var elements = document.getElementsByClassName(className);
+
+                    return elements.length ? elements[0] : null;
+                }
+
+                self.resizeHandler = function(event) {
+
+                    if (self.showByMediaQuery) {
+                        if (self.enableDeepLinking) {
+                            var stateName = self.getHashFragment();
+
+                            if (stateName == null || stateName == "") {
+                                var initialView = self.getInitialView();
+                                stateName = initialView ? self.getStateNameByViewId(initialView.id) : null;
+                            }
+                            self.showMediaQueryViewsByState(stateName, event);
+                        }
+                    } else {
+                        var visibleViews = self.getVisibleViews();
+
+                        for (let index = 0; index < visibleViews.length; index++) {
+                            var view = visibleViews[index];
+                            self.scaleViewIfNeeded(view);
+                        }
+                    }
+
+                    window.dispatchEvent(new Event(self.APPLICATION_RESIZE));
+                }
+
+                self.scaleViewIfNeeded = function(view) {
+
+                    if (self.scaleViewsOnResize) {
+                        if (view == null) {
+                            view = self.getVisibleView();
+                        }
+
+                        var isViewScaled = view.getAttributeNS(null, self.SIZE_STATE_NAME) == "false" ? false : true;
+
+                        if (isViewScaled) {
+                            self.scaleViewToFit(view, true);
+                        } else {
+                            self.scaleViewToActualSize(view);
+                        }
+                    } else if (view) {
+                        self.centerView(view);
+                    }
+                }
+
+                self.centerView = function(view) {
+
+                    if (self.scaleViewsToFit) {
+                        self.scaleViewToFit(view, true);
+                    } else {
+                        self.scaleViewToActualSize(view); // for centering support for now
+                    }
+                }
+
+                self.preventDoubleClick = function(event) {
+                    event.stopImmediatePropagation();
+                }
+
+                self.getHashFragment = function() {
+                    var value = window.location.hash ? window.location.hash.replace("#", "") : "";
+                    return value;
+                }
+
+                self.showBlockElement = function(view) {
+                    view.style.display = "block";
+                }
+
+                self.hideElement = function(view) {
+                    view.style.display = "none";
+                }
+
+                self.showStateFunction = null;
+
+                self.showMediaQueryViewsByState = function(state, event) {
+                    // browser will hide and show by media query (small, medium, large)
+                    // but if multiple views exists at same size user may want specific view
+                    // if showStateFunction is defined that is called with state fragment and user can show or hide each media matching view by returning true or false
+                    // if showStateFunction is not defined and state is defined and view has a defined state that matches then show that and hide other matching views
+                    // if no state is defined show view 
+                    // an viewChanging event is dispatched before views are shown or hidden that can be prevented 
+
+                    // get all matched queries
+                    // if state name is specified then show that view and hide other views
+                    // if no state name is defined then show
+                    var matchedViews = self.getMatchingViews();
+                    var matchMediaQuery = true;
+                    var foundViews = self.getViewsByStateName(state, matchMediaQuery);
+                    var showViews = [];
+                    var hideViews = [];
+
+                    // loop views that match media query 
+                    for (let index = 0; index < matchedViews.length; index++) {
+                        var view = matchedViews[index];
+
+                        // let user determine visible view
+                        if (self.showStateFunction != null) {
+                            if (self.showStateFunction(view, state)) {
+                                showViews.push(view);
+                            } else {
+                                hideViews.push(view);
+                            }
+                        }
+                        // state was defined so check if view matches state
+                        else if (foundViews.length) {
+
+                            if (foundViews.indexOf(view) != -1) {
+                                showViews.push(view);
+                            } else {
+                                hideViews.push(view);
+                            }
+                        }
+                        // if no state names are defined show view (define unused state name to exclude)
+                        else if (state == null || state == "") {
+                            showViews.push(view);
+                        }
+                    }
+
+                    if (showViews.length) {
+                        var viewChangingEvent = new Event(self.VIEW_CHANGING);
+                        viewChangingEvent.showViews = showViews;
+                        viewChangingEvent.hideViews = hideViews;
+                        window.dispatchEvent(viewChangingEvent);
+
+                        if (viewChangingEvent.defaultPrevented == false) {
+                            for (var index = 0; index < hideViews.length; index++) {
+                                var view = hideViews[index];
+
+                                if (self.isOverlay(view)) {
+                                    self.removeOverlay(view);
+                                } else {
+                                    self.hideElement(view);
+                                }
+                            }
+
+                            for (var index = 0; index < showViews.length; index++) {
+                                var view = showViews[index];
+
+                                if (index == showViews.length - 1) {
+                                    self.clearDisplay(view);
+                                    self.setViewOptions(view);
+                                    self.setViewVariables(view);
+                                    self.centerView(view);
+                                    self.updateURLState(view, state);
+                                }
+                            }
+                        }
+
+                        var viewChangeEvent = new Event(self.VIEW_CHANGE);
+                        viewChangeEvent.showViews = showViews;
+                        viewChangeEvent.hideViews = hideViews;
+                        window.dispatchEvent(viewChangeEvent);
+                    }
+
+                }
+
+                self.clearDisplay = function(view) {
+                    view.style.setProperty("display", null);
+                }
+
+                self.hashChangeHandler = function(event) {
+                    var fragment = self.getHashFragment();
+                    var view = self.getViewById(fragment);
+
+                    if (self.showByMediaQuery) {
+                        var stateName = fragment;
+
+                        if (stateName == null || stateName == "") {
+                            var initialView = self.getInitialView();
+                            stateName = initialView ? self.getStateNameByViewId(initialView.id) : null;
+                        }
+                        self.showMediaQueryViewsByState(stateName);
+                    } else {
+                        if (view) {
+                            self.hideViews();
+                            self.showView(view);
+                            self.setViewVariables(view);
+                            self.updateViewLabel();
+
+                            window.dispatchEvent(new Event(self.VIEW_CHANGE));
+                        } else {
+                            window.dispatchEvent(new Event(self.VIEW_NOT_FOUND));
+                        }
+                    }
+                }
+
+                self.popStateHandler = function(event) {
+                    var state = event.state;
+                    var fragment = state ? state.name : window.location.hash;
+                    var view = self.getViewById(fragment);
+
+                    if (view) {
+                        self.hideViews();
+                        self.showView(view);
+                        self.updateViewLabel();
+                    } else {
+                        window.dispatchEvent(new Event(self.VIEW_NOT_FOUND));
+                    }
+                }
+
+                self.doubleClickHandler = function(event) {
+                    var view = self.getVisibleView();
+                    var scaleValue = view ? self.getViewScaleValue(view) : 1;
+                    var scaleNeededToFit = view ? self.getViewFitToViewportScale(view) : 1;
+                    var scaleNeededToFitWidth = view ? self.getViewFitToViewportWidthScale(view) : 1;
+                    var scaleNeededToFitHeight = view ? self.getViewFitToViewportHeightScale(view) : 1;
+                    var scaleToFitType = self.scaleToFitType;
+
+                    // Three scenarios
+                    // - scale to fit on double click
+                    // - set scale to actual size on double click
+                    // - switch between scale to fit and actual page size
+
+                    if (scaleToFitType == "width") {
+                        scaleNeededToFit = scaleNeededToFitWidth;
+                    } else if (scaleToFitType == "height") {
+                        scaleNeededToFit = scaleNeededToFitHeight;
+                    }
+
+                    // if scale and actual size enabled then switch between
+                    if (self.scaleToFitOnDoubleClick && self.actualSizeOnDoubleClick) {
+                        var isViewScaled = view.getAttributeNS(null, self.SIZE_STATE_NAME);
+                        var isScaled = false;
+
+                        // if scale is not 1 then view needs scaling
+                        if (scaleNeededToFit != 1) {
+
+                            // if current scale is at 1 it is at actual size
+                            // scale it to fit
+                            if (scaleValue == 1) {
+                                self.scaleViewToFit(view);
+                                isScaled = true;
+                            } else {
+                                // scale is not at 1 so switch to actual size
+                                self.scaleViewToActualSize(view);
+                                isScaled = false;
+                            }
+                        } else {
+                            // view is smaller than viewport 
+                            // so scale to fit() is scale actual size
+                            // actual size and scaled size are the same
+                            // but call scale to fit to retain centering
+                            self.scaleViewToFit(view);
+                            isScaled = false;
+                        }
+
+                        view.setAttributeNS(null, self.SIZE_STATE_NAME, isScaled + "");
+                        isViewScaled = view.getAttributeNS(null, self.SIZE_STATE_NAME);
+                    } else if (self.scaleToFitOnDoubleClick) {
+                        self.scaleViewToFit(view);
+                    } else if (self.actualSizeOnDoubleClick) {
+                        self.scaleViewToActualSize(view);
+                    }
+
+                }
+
+                self.scaleViewToFit = function(view) {
+                    return self.setViewScaleValue(view, true);
+                }
+
+                self.scaleViewToActualSize = function(view) {
+                    self.setViewScaleValue(view, false, 1);
+                }
+
+                self.onloadHandler = function(event) {
+                    self.initialize();
+                }
+
+                self.setElementHTML = function(id, value) {
+                    var element = self.getElement(id);
+                    element.innerHTML = value;
+                }
+
+                self.getStackArray = function(error) {
+                    var value = "";
+
+                    if (error == null) {
+                        try {
+                            error = new Error("Stack");
+                        } catch (e) {
+
+                        }
+                    }
+
+                    if ("stack" in error) {
+                        value = error.stack;
+                        var methods = value.split(/\n/g);
+
+                        var newArray = methods ? methods.map(function(value, index, array) {
+                            value = value.replace(/\@.*/, "");
+                            return value;
+                        }) : null;
+
+                        if (newArray && newArray[0].includes("getStackTrace")) {
+                            newArray.shift();
+                        }
+                        if (newArray && newArray[0].includes("getStackArray")) {
+                            newArray.shift();
+                        }
+                        if (newArray && newArray[0] == "") {
+                            newArray.shift();
+                        }
+
+                        return newArray;
+                    }
+
+                    return null;
+                }
+
+                self.log = function(value) {
+                    console.log.apply(this, [value]);
+                }
+
+                // initialize on load
+                // sometimes the body size is 0 so we call this now and again later
+                window.addEventListener("load", self.onloadHandler);
+                window.document.addEventListener("DOMContentLoaded", self.onloadHandler);
+            }
+
+            window.application = new Application();
+        </script>
+    </head>
+
+
+    <body>
+
+        <div id="Web_1920__28">
+
+            <img id="CIW_R" src="CIW_R.png" srcset="CIW_R.png 1x, CIW_R@2x.png 2x">
+
+            <img id="adobe-logo" src="adobe-logo.png" srcset="adobe-logo.png 1x, adobe-logo@2x.png 2x">
+
+            <svg class="bg">
+			
+		<rect id="bg" rx="0" ry="0" x="0" y="0" width="1920.069" height="2007.947">
+		</rect>
+	</svg>
+            <svg class="Rectngulo_71">
+		<rect id="Rectngulo_71" rx="0" ry="0" x="0" y="0" width="1920" height="1535">
+		</rect>
+	</svg>
+            <svg class="Rectngulo_131">
+		<rect id="Rectngulo_131" rx="0" ry="0" x="0" y="0" width="1920" height="780">
+		</rect>
+	</svg>
+
+            <div id="Grupo_923">
+
+
+
+
+
+
+
+                <div id="Mas_info">
+                    <span>Mas info.</span>
+                </div>
+
+                <img id="Imagen_1" src="Imagen_1.png" srcset="Imagen_1.png 1x, Imagen_1@2x.png 2x">
+
+                <div id="_2021_-_Universidad_De_Cundina">
+                    <span>© 2021 - Universidad De Cundinamarca</span>
+                </div>
+            </div>
+            <div id="Grupo_914">
+                <svg class="Rectngulo_134">
+			<rect id="Rectngulo_134" rx="30" ry="30" x="0" y="0" width="1460" height="1516">
+			</rect>
+		</svg>
+                <div id="Aqu__encontraras_de_forma_resu">
+                    <span>Aquí  encontraras de forma resumida y entendible, la ley 1273 de los delitos informáticos en Colombia</span>
+                </div>
+                <img id="Imagen_4" src="Imagen_4.png" srcset="Imagen_4.png 1x, Imagen_4@2x.png 2x">
+
+                <div id="Ley_1273_z">
+                    <span>Ley 1273</span>
+                </div>
+                <div id="Cuadrcula_de_repeticin_2">
+                    <div id="Cuadrcula_de_repeticin_2_0" class="">
+                        <div id="Grupo_de_desplazamiento_1">
+                            <div id="GLOBEX">
+                                <span>GLOBEX</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="Cuadrcula_de_repeticin_2_1" class="">
+                        <div id="Grupo_de_desplazamiento_1_">
+                            <div id="GLOBEX_">
+                                <span>GLOBEX</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="Cuadrcula_de_repeticin_2_2" class="">
+                        <div id="Grupo_de_desplazamiento_1_ba">
+                            <div id="GLOBEX_ba">
+                                <span>GLOBEX</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="Cuadrcula_de_repeticin_2_3" class="">
+                        <div id="Grupo_de_desplazamiento_1_bb">
+                            <div id="GLOBEX_bc">
+                                <span>GLOBEX</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="Cuadrcula_de_repeticin_2_4" class="">
+                        <div id="Grupo_de_desplazamiento_1_be">
+                            <div id="GLOBEX_bf">
+                                <span>GLOBEX</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="Cuadrcula_de_repeticin_2_5" class="">
+                        <div id="Grupo_de_desplazamiento_1_bh">
+                            <div id="GLOBEX_bi">
+                                <span>GLOBEX</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="Cuadrcula_de_repeticin_2_6" class="">
+                        <div id="Grupo_de_desplazamiento_1_bk">
+                            <div id="GLOBEX_bl">
+                                <span>GLOBEX</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="Cuadrcula_de_repeticin_2_7" class="">
+                        <div id="Grupo_de_desplazamiento_1_bn">
+                            <div id="GLOBEX_bo">
+                                <span>GLOBEX</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="Cuadrcula_de_repeticin_2_8" class="">
+                        <div id="Grupo_de_desplazamiento_1_bq">
+                            <div id="GLOBEX_br">
+                                <span>GLOBEX</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="Cuadrcula_de_repeticin_2_9" class="">
+                        <div id="Grupo_de_desplazamiento_1_bt">
+                            <div id="GLOBEX_bu">
+                                <span>GLOBEX</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="Cuadrcula_de_repeticin_2_10" class="">
+                        <div id="Grupo_de_desplazamiento_1_bw">
+                            <div id="GLOBEX_bx">
+                                <span>GLOBEX</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="Cuadrcula_de_repeticin_2_11" class="">
+                        <div id="Grupo_de_desplazamiento_1_bz">
+                            <div id="GLOBEX_b">
+                                <span>GLOBEX</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="Cuadrcula_de_repeticin_2_12" class="">
+                        <div id="Grupo_de_desplazamiento_1_b">
+                            <div id="GLOBEX_ca">
+                                <span>GLOBEX</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="Cuadrcula_de_repeticin_2_13" class="">
+                        <div id="Grupo_de_desplazamiento_1_ca">
+                            <div id="GLOBEX_cb">
+                                <span>GLOBEX</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="Cuadrcula_de_repeticin_2_14" class="">
+                        <div id="Grupo_de_desplazamiento_1_cb">
+                            <div id="GLOBEX_cc">
+                                <span>GLOBEX</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="Cuadrcula_de_repeticin_2_15" class="">
+                        <div id="Grupo_de_desplazamiento_1_cc">
+                            <div id="GLOBEX_cd">
+                                <span>GLOBEX</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="Cuadrcula_de_repeticin_2_16" class="">
+                        <div id="Grupo_de_desplazamiento_1_ce">
+                            <div id="GLOBEX_cf">
+                                <span>GLOBEX</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="Cuadrcula_de_repeticin_2_17" class="">
+                        <div id="Grupo_de_desplazamiento_1_ch">
+                            <div id="GLOBEX_ci">
+                                <span>GLOBEX</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="Cuadrcula_de_repeticin_2_18" class="">
+                        <div id="Grupo_de_desplazamiento_1_ck">
+                            <div id="GLOBEX_cl">
+                                <span>GLOBEX</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="Cuadrcula_de_repeticin_2_19" class="">
+                        <div id="Grupo_de_desplazamiento_1_cn">
+                            <div id="GLOBEX_co">
+                                <span>GLOBEX</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="Cdigo_de_tica">
+                    <span>Código de Ética</span>
+                </div>
+            </div>
+            <div id="Grupo_915">
+                <svg class="Rectngulo_96">
+			<rect id="Rectngulo_96" rx="30" ry="30" x="0" y="0" width="1598" height="588">
+			</rect>
+		</svg>
+                <div id="Entrate_de_los_artculos_y_dere">
+                    <span>Entérate de los artículos y derechos humanos que esta enfocada la legislación informática, aprende de forma interactiva! </span><span style="text-decoration:underline;">¿Ya estas registrado?</span>
+                </div>
+                <svg class="Rectngulo_97">
+			<rect id="Rectngulo_97" rx="16" ry="16" x="0" y="0" width="281.136" height="73.301">
+			</rect>
+		</svg>
+
+                <div id="Legislacin_Informtica_">
+                    <span>Legislación Informática </span>
+                </div>
+                <svg class="Rectngulo_247">
+			<rect id="Rectngulo_247" rx="16" ry="16" x="0" y="0" width="264.475" height="72.219">
+			</rect>
+		</svg>
+
+            </div>
+            <div id="Grupo_908">
+                <svg class="Rectngulo_73">
+			<rect id="Rectngulo_73" rx="0" ry="0" x="0" y="0" width="1920" height="881">
+			</rect>
+		</svg>
+                <div id="Grupo_907">
+                    <div id="Grupo_854">
+                        <div id="ACTUALIZACION">
+                            <span>ACTUALIZACION</span>
+                        </div>
+                        <div id="ACTUALIZACION_c">
+                            <span>ACTUALIZACION</span>
+                        </div>
+                    </div>
+                    <div id="Ultima_actualizacin_del_sistem">
+                        <span>Ultima actualización del sistema</span>
+                    </div>
+                    <div id="Grupo_341">
+                        <svg class="Elipse_195">
+					<ellipse id="Elipse_195" rx="11" ry="11" cx="11" cy="11">
+					</ellipse>
+				</svg>
+                        <svg class="Trazado_468" viewBox="20675.977 13651.672 526.744 3">
+					<path id="Trazado_468" d="M 21202.720703125 13651.671875 L 20675.9765625 13651.671875">
+					</path>
+				</svg>
+                        <svg class="Elipse_197">
+					<ellipse id="Elipse_197" rx="11" ry="11" cx="11" cy="11">
+					</ellipse>
+				</svg>
+                    </div>
+                    <svg class="Rectngulo_114">
+				<rect id="Rectngulo_114" rx="26" ry="26" x="0" y="0" width="682" height="160">
+				</rect>
+			</svg>
+                    <div id="ID04____________04__________20">
+                        <span>04      /      04      /    2021</span>
+                    </div>
+                </div>
+                <div id="Dia">
+                    <span>Dia</span>
+                </div>
+                <div id="Mes">
+                    <span>Mes</span>
+                </div>
+                <div id="Ao">
+                    <span>Año</span>
+                </div>
+            </div>
+            <div id="Grupo_898">
+                <svg class="Trazado_695" viewBox="-14056.687 13722.004 2 2">
+			<path id="Trazado_695" d="M -14056.6865234375 13722.00390625">
+			</path>
+		</svg>
+                <div id="Grupo_852">
+                    <div id="Cuadrcula_de_repeticin_1">
+                        <div id="Cuadrcula_de_repeticin_1_0" class="">
+                            <div id="GLOBEX_dj">
+                                <span>GLOBEX</span>
+                            </div>
+                        </div>
+                        <div id="Cuadrcula_de_repeticin_1_1" class="">
+                            <div id="GLOBEX_dl">
+                                <span>GLOBEX</span>
+                            </div>
+                        </div>
+                        <div id="Cuadrcula_de_repeticin_1_2" class="">
+                            <div id="GLOBEX_dn">
+                                <span>GLOBEX</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="Grupo_897">
+                    <div id="Grupo_890">
+                        <div id="Artculo_11_ARTICULO_11El_derec">
+                            <span>Artículo 11 ARTICULO 11º—El derecho a la vida es inviolable. No habrá pena de muerte.<br/>Volver al inicio Volver al indice<br/><br/>Artículo 12 ARTICULO 12º—Nadie será sometido a desaparición forzada, a torturas ni a tratos o penas crueles, inhumanos o degradantes.<br/>Volver al inicio Volver al indice<br/><br/>Artículo 13 ARTICULO 13º—Todas las personas nacen libres e iguales ante la ley, recibirán la misma protección y trato de las autoridades y gozarán de los mismos derechos, libertades y oportunidades sin ninguna discriminación por razones de sexo, raza, origen nacional o familiar, lengua, religión, opinión política o filosófica. El Estado promoverá las condiciones para que la igualdad sea real y efectiva y adoptará medidas en favor de grupos discriminados o marginados. El Estado protegerá especialmente a aquellas personas que por su condición económica, física o mental, se encuentren en circunstancia de debilidad manifiesta y sancionará los abusos o maltratos que contra ellas se cometan.<br/>Volver al inicio Volver al indice<br/><br/>Artículo 14 ARTICULO 14º—Toda persona tiene derecho al reconocimiento de su personalidad jurídica.<br/>Volver al inicio Volver al indice<br/><br/>Artículo 15 ARTICULO 15º—Todas las personas tienen derecho a su intimidad personal y familiar y a su buen nombre, y el Estado debe respetarlos y hacerlos respetar. De igual modo, tienen derecho a conocer, actualizar y rectificar las informaciones que se hayan recogido sobre ellas en bancos de datos y en archivos de entidades públicas y privadas. En la recolección, tratamiento y circulación de datos se respetarán la libertad y demás garantías consagradas en la Constitución. La correspondencia y demás formas de comunicación privada son inviolables. Sólo pueden ser interceptadas o registradas mediante orden judicial, en los casos y con las formalidades que establezca la ley. Para efectos tributarios o judiciales y para los casos de inspección, vigilancia e intervención del Estado podrá exigirse la presentación de libros de contabilidad y demás documentos privados, en los términos que señale la ley. NOTA: El artículo 15 de la Constitución Política fue modificado por el artículo 1º del Acto Legislativo 2 de 2003. Dicho Acto Legislativo fue declarado inexequible por la Corte Constitucional, por el vicio de procedimiento ocurrido en el sexto debate de la segunda vuelta, mediante sentencia de la Sala Plena. C-816 de agosto 30 de 2004. Exps. D-5121 y D-5122. M.P. Jaime Córdoba Triviño y Rodrigo Uprimny Yepes. En consecuencia el texto original del artículo 15 de la Constitución Política, que aparece aquí transcrito, recobra su vigencia.<br/>Volver al inicio Volver al indice<br/><br/>Artículo 16 ARTICULO 16º—Todas las personas tienen derecho al libre desarrollo de su personalidad sin más limitaciones que las que imponen los derechos de los demás y el orden jurídico.<br/>Volver al inicio Volver al indice<br/><br/>Artículo 17 ARTICULO 17º—Se prohíben la esclavitud, la servidumbre y la trata de seres humanos en todas sus formas.<br/>Volver al inicio Volver al indice<br/><br/>Artículo 18 ARTICULO 18º—Se garantiza la libertad de conciencia. Nadie será molestado por razón de sus convicciones o creencias ni compelido a revelarlas ni obligado a actuar contra su conciencia.<br/>Volver al inicio Volver al indice<br/><br/>Artículo 19 ARTICULO 19º—Se garantiza la libertad de cultos. Toda persona tiene derecho a profesar libremente su religión y a difundirla en forma individual o colectiva. Todas las confesiones religiosas e iglesias son igualmente libres ante la ley.<br/>Volver al inicio Volver al indice<br/><br/>Artículo 20 ARTICULO 20º—Se garantiza a toda persona la libertad de expresar y difundir su pensamiento y opiniones, la de informar y recibir información veraz e imparcial, y la de fundar medios masivos de comunicación. Estos son libres y tienen responsabilidad social. Se garantiza el derecho a la rectificación en condiciones de equidad. No habrá censura.<br/>Volver al inicio Volver al indice<br/><br/>Artículo 21 ARTICULO 21º—Se garantiza el derecho a la honra. La ley señalará la forma de su protección.<br/>Volver al inicio Volver al indice<br/><br/>Artículo 22 ARTICULO 22º—La paz es un derecho y un deber de obligatorio cumplimiento.<br/>Volver al inicio Volver al indice<br/><br/>Artículo 23 ARTICULO 23º—Toda persona tiene derecho a presentar peticiones respetuosas a las autoridades por motivos de interés general o particular y a obtener pronta resolución. El legislador podrá reglamentar su ejercicio ante organizaciones privadas para garantizar los derechos fundamentales.<br/>Volver al inicio Volver al indice<br/><br/>Artículo 24 ARTICULO 24º—Todo colombiano, con las limitaciones que establezca la ley, tiene derecho a circular libremente por el territorio nacional, a entrar y salir de él, y a permanecer y residenciarse en Colombia. NOTA: El artículo 24 de la Constitución Política fue modificado por el artículo 2º del Acto Legislativo 2 de 2003. Dicho Acto Legislativo fue declarado inexequible por la Corte Constitucional, por el vicio de procedimiento ocurrido en el sexto debate de la segunda vuelta, mediante sentencia de la Sala Plena. C-816 de agosto 30 de 2004. Exps. D-5121 y D-5122. M.P. Jaime Córdoba Triviño y Rodrigo Uprimny Yepes. En consecuencia el texto original del artículo 24 de la Constitución Política, que aparece aquí transcrito, recobra su vigencia.<br/>Volver al inicio Volver al indice<br/><br/>Artículo 25 ARTICULO 25º—El trabajo es un derecho y una obligación social y goza, en todas sus modalidades, de la especial protección del Estado. Toda persona tiene derecho a un trabajo en condiciones dignas y justas.<br/>Volver al inicio Volver al indice<br/><br/>Artículo 26 ARTICULO 26º—Toda persona es libre de escoger profesión u oficio. La ley podrá exigir títulos de idoneidad. Las autoridades competentes inspeccionarán y vigilarán el ejercicio de las profesiones. Las ocupaciones, artes y oficios que no exijan formación académica son de libre ejercicio, salvo aquéllas que impliquen un riesgo social. Las profesiones legalmente reconocidas pueden organizarse en colegios. La estructura interna y el funcionamiento de éstos deberán ser democráticos. La ley podrá asignarles funciones públicas y establecer los debidos controles.<br/>Volver al inicio Volver al indice<br/><br/>Artículo 27 ARTICULO 27º—El Estado garantiza las libertades de enseñanza, aprendizaje, investigación y cátedra.<br/>Volver al inicio Volver al indice<br/><br/>Artículo 28 ARTICULO 28º—Toda persona es libre. Nadie puede ser molestado en su persona o familia, ni reducido a prisión o arresto, ni detenido, ni su domicilio registrado, sino en virtud de mandamiento escrito de autoridad judicial competente, con las formalidades legales y por motivo previamente definido en la ley. La persona detenida preventivamente será puesta a disposición del juez competente dentro de las treinta y seis horas siguientes, para que éste adopte la decisión correspondiente en el término que establezca la ley. En ningún caso podrá haber detención, prisión ni arresto por deudas, ni penas y medidas de seguridad imprescriptibles. NOTA: El artículo 28 de la Constitución Política fue modificado por el artículo 3º del Acto Legislativo 2 de 2003. Dicho Acto Legislativo fue declarado inexequible por la Corte Constitucional, por el vicio de procedimiento ocurrido en el sexto debate de la segunda vuelta, mediante sentencia de la Sala Plena. C-816 de agosto 30 de 2004. Exps. D-5121 y D-5122. M.P. Jaime Córdoba Triviño y Rodrigo Uprimny Yepes. En consecuencia el texto original del artículo 28 de la Constitución Política, que aparece aquí transcrito, recobra su vigencia.<br/>Volver al inicio Volver al indice<br/><br/>Artículo 29 ARTICULO 29º—El debido proceso se aplicará a toda clase de actuaciones judiciales y administrativas. Nadie podrá ser juzgado sino conforme a leyes preexistentes al acto que se le imputa, ante juez o tribunal competente y con observancia de la plenitud de las formas propias de cada juicio. En materia penal, la ley permisiva o favorable, aun cuando sea posterior, se aplicará de preferencia a la restrictiva o desfavorable. Toda persona se presume inocente mientras no se la haya declarado judicialmente culpable. Quien sea sindicado tiene derecho a la defensa y a la asistencia de un abogado escogido por él, o de oficio, durante la investigación y el juzgamiento; a un debido proceso público sin dilaciones injustificadas; a presentar pruebas y a controvertir las que se alleguen en su contra; a impugnar la sentencia condenatoria, y a no ser juzgado dos veces por el mismo hecho. Es nula, de pleno derecho, la prueba obtenida con violación del debido proceso.<br/>Volver al inicio Volver al indice<br/><br/>Artículo 30 ARTICULO 30º—Quien estuviere privado de su libertad, y creyere estarlo ilegalmente, tiene derecho a invocar ante cualquier autoridad judicial, en todo tiempo, por sí o por interpuesta persona, el habeas corpus, el cual debe resolverse en el término de treinta y seis horas.<br/>Volver al inicio Volver al indice<br/><br/>Artículo 31 ARTICULO 31º—Toda sentencia judicial podrá ser apelada o consultada, salvo las excepciones que consagre la ley. El superior no podrá agravar la pena impuesta cuando el condenado sea apelante único.<br/>Volver al inicio Volver al indice<br/><br/>Artículo 32 ARTICULO 32º—El delincuente sorprendido en flagrancia podrá ser aprehendido y llevado ante el juez por cualquier persona. Si los agentes de la autoridad lo persiguieren y se refugiare en su propio domicilio, podrán penetrar en él, para el acto de la aprehensión; si se acogiere a domicilio ajeno, deberá preceder requerimiento al morador.<br/>Volver al inicio Volver al indice<br/><br/>Artículo 33 ARTICULO 33º—Nadie podrá ser obligado a declarar contra sí mismo o contra su cónyuge, compañero permanente o parientes dentro del cuarto grado de consanguinidad, segundo de afinidad o primero civil.<br/>Volver al inicio Volver al indice<br/><br/>Artículo 34 ARTICULO 34º—Se prohíben las penas de destierro, prisión perpetua y confiscación. No obstante, por sentencia judicial, se declarará extinguido el dominio sobre los bienes adquiridos mediante enriquecimiento ilícito, en perjuicio del tesoro público o con grave deterioro de la moral social.<br/>Volver al inicio Volver al indice<br/><br/>Artículo 35 ARTICULO 35º—Modificado. A.L. 1/97, art. 1º. La extradición se podrá solicitar, conceder u ofrecer de acuerdo con los tratados públicos y, en su defecto con la ley. Además, la extradición de los colombianos por nacimiento se concederá por delitos cometidos en el exterior, considerados como tales en la legislación penal colombiana. *(La ley reglamentará la materia)*. La extradición no procederá por delitos políticos. No procederá la extradición cuando se trate de hechos cometidos con anterioridad a la promulgación de la presente norma. NOTAS: 1. El texto de la norma modificada era el siguiente: “<br/>Volver al inicio Volver al indice<br/><br/>Artículo 35. ART. 35.—Se prohíbe la extradición de colombianos por nacimiento. No se concederá la extradición de extranjeros por delitos políticos o de opinión. Los colombianos que hayan cometido delitos en el exterior, considerados como tales en la legislación nacional, serán procesados y juzgados en Colombia”. *2. La expresión entre paréntesis fue declarada inexequible por la Corte Constitucional, sentencia C-543 de octubre 1º de 1998. M.P. Carlos Gaviria Díaz, no obstante, como lo indica la Corte, el legislador no pierde esa facultad constitucional, pues el fallo ha declarado la inexequiblidad exclusivamente por vicios de forma, única posibilidad de revisión constitucional sobre los actos legislativos. El resto del texto del articulado del acto legislativo que reformó el artículo 35 ha sido declarado exequible en el mismo fallo, manteniéndose la irretroactividad de la extradición de colombianos. 3. Convenciones bilaterales de extradición: Colombia ha celebrado, entre otras, este tipo de convenciones con los siguientes países (a continuación la ley aprobatoria del tratado): Argentina, Ley 46 de 1926 Bélgica, Ley 74 de 1913, Ley 47de 1935 (tratado adicional) y Ley 14 de 1961. Brasil, Ley 85 de 1939 Costa Rica, Ley 19/31 Cuba, Ley 16 de 1932 Chile, Ley 8ª de 1928 El Salvador, Ley 64 de 1905 España, Ley 35 de 1892 Estados Unidos de América, Ley 66 de 1888 y Ley 8ª de 1943 Francia, Decreto de 12 de marzo de 1852 Gran Bretaña, Ley 48 de 1888 y Ley 15 de 1930 Guatemala, Ley 40 de 1930 México, Ley 30 de 1930 Nicaragua, Ley 39 de 1930 Panamá, Ley 57 de 1928 Ley 876 de 2004, enero 2, por medio de la cual se aprueba el protocolo modificatorio a la “Convención de extradición entre la República de Colombia y el Reino de España”, suscrita en Bogotá el 23 de julio de 1892, hecho en Madrid el dieciséis (16) de marzo de mil novecientos noventa y nueve (1999).<br/>Volver al inicio Volver al indice<br/><br/>Artículo 36 ARTICULO 36º—Se reconoce el derecho de asilo en los términos previstos en la ley.<br/>Volver al inicio Volver al indice<br/><br/>Artículo 37 ARTICULO 37º—Toda parte del pueblo puede reunirse y manifestarse pública y pacíficamente. Sólo la ley podrá establecer de manera expresa los casos en los cuales se podrá limitar el ejercicio de este derecho.<br/>Volver al inicio Volver al indice<br/><br/>Artículo 38 ARTICULO 38º—Se garantiza el derecho de libre asociación para el desarrollo de las distintas actividades que las personas realizan en sociedad.<br/>Volver al inicio Volver al indice<br/><br/>Artículo 39 ARTICULO 39º—Los trabajadores y empleadores tienen derecho a constituir sindicatos o asociaciones, sin intervención del Estado. Su reconocimiento jurídico se producirá con la simple inscripción del acta de constitución. La estructura interna y el funcionamiento de los sindicatos y organizaciones sociales y gremiales se sujetarán al orden legal y a los principios democráticos. La cancelación o la suspensión de la personería jurídica sólo procede por vía judicial. Se reconoce a los representantes sindicales el fuero y las demás garantías necesarias para el cumplimiento de su gestión. No gozan del derecho de asociación sindical los miembros de la fuerza pública.<br/>Volver al inicio Volver al indice<br/><br/>Artículo 40 ARTICULO 40º—Todo ciudadano tiene derecho a participar en la conformación, ejercicio y control del poder político. Para hacer efectivo este derecho puede: 1. Elegir y ser elegido. 2. Tomar parte en elecciones, plebiscitos, referendos, consultas populares y otras formas de participación democrática. 3. Constituir partidos, movimientos y agrupaciones políticas sin limitación alguna; formar parte de ellos libremente y difundir sus ideas y programas. 4. Revocar el mandato de los elegidos en los casos y en la forma que establecen la Constitución y la ley. 5. Tener iniciativa en las corporaciones públicas. 6. Interponer acciones públicas en defensa de la Constitución y de la ley. 7. Acceder al desempeño de funciones y cargos públicos, salvo los colombianos, por nacimiento o por adopción, que tengan doble nacionalidad. La ley reglamentará esta excepción y determinará los casos a los cuales ha de aplicarse. Las autoridades garantizarán la adecuada y efectiva participación de la mujer en los niveles decisorios de la administración pública.<br/><br/></span><br>
+                        </div>
+                    </div>
+                    <div id="Grupo_887">
+                        <svg class="Trazado_696" viewBox="-14087.823 10866.999 6 38.009">
+					<path id="Trazado_696" d="M -14087.8232421875 10866.9990234375 L -14087.8232421875 10905.0078125">
+					</path>
+				</svg>
+                        <svg class="Rectngulo_242">
+					<rect id="Rectngulo_242" rx="12" ry="12" x="0" y="0" width="1363" height="53">
+					</rect>
+				</svg>
+                        <div id="Constitucin_Poltica_De_Colombi">
+                            <span>Constitución Política De Colombia - Derechos Fundamentales - Artículos del 11-40</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="Grupo_922">
+                <svg class="Rectngulo_148">
+			<rect id="Rectngulo_148" rx="30" ry="30" x="0" y="0" width="1460" height="629">
+			</rect>
+		</svg>
+                <div id="Grupo_867">
+                    <div id="Grupo_853">
+                        <div id="DESARROLLADORES">
+                            <span>DESARROLLADORES</span>
+                        </div>
+                        <div id="DESARROLLADORES_d">
+                            <span>DESARROLLADORES</span>
+                        </div>
+                    </div>
+                    <div id="Andres_Arevalo">
+                        <span>Andres Arevalo</span>
+                    </div>
+                    <div id="Team_-_Programador">
+                        <span>Team - Programador</span>
+                    </div>
+                    <div id="Francisco_Casallas">
+                        <span>Francisco Casallas</span>
+                    </div>
+                    <div id="Scrum_Master_-_Programador">
+                        <span>Scrum Master - Programador</span>
+                    </div>
+                    <div id="Roberto_Nieto">
+                        <span>Roberto Nieto</span>
+                    </div>
+                    <div id="Team_-_Diseador">
+                        <span>Team - Diseñador</span>
+                    </div>
+                    <img id="Imagen_5" src="Imagen_5.png" srcset="Imagen_5.png 1x, Imagen_5@2x.png 2x">
+
+                </div>
+                <img id="Imagen_6" src="Imagen_6.png" srcset="Imagen_6.png 1x, Imagen_6@2x.png 2x">
+
+                <img id="Imagen_7" src="Imagen_7.png" srcset="Imagen_7.png 1x, Imagen_7@2x.png 2x">
+
+            </div>
+            <img id="Bandera" src="Bandera.png" srcset="Bandera.png 1x, Bandera@2x.png 2x">
+
+            <svg class="Rectngulo_246">
+		<rect id="Rectngulo_246" rx="0" ry="0" x="0" y="0" width="7" height="1">
+		</rect>
+	</svg>
+            <div id="Derechos_Reservados">
+                <span>©Derechos Reservados</span>
+            </div>
+            <img id="Imagen_2" src="Imagen_2.png" srcset="Imagen_2.png 1x, Imagen_2@2x.png 2x">
+
+            <img id="Imagen_3" src="Imagen_3.png" srcset="Imagen_3.png 1x, Imagen_3@2x.png 2x">
+
+            <img id="ID0001" src="ID0001.png" srcset="ID0001.png 1x, ID0001@2x.png 2x">
+
+            <div id="La_Legislacin_en_informtica_se">
+                <span>La Legislación en informática</span><span style="font-style:normal;font-weight:lighter;">, se refiere a los acuerdos y las leyes aprobadas qué regulan el uso de la información que se encuentra en la internet, dispositivos electrónicos y cualquiera de los medios digitales junto con los delitos que se cometen por el uso indebido de estos, además, observa todo lo relativo a la propiedad intelectual y derechos de autor. Tomado de www.misabogados.com.co</span>
+            </div>
+            <div id="Los_cdigos_de_tica_para_el_ing">
+                <span>Los códigos de ética para el ingeniero a través de COPNIA lo encuentras aquí simplificado y bien explicado</span>
+            </div>
+            <div id="Grupo_925">
+                <div id="Cuadrcula_de_repeticin_1_ej">
+                    <div id="Cuadrcula_de_repeticin_1_ej_0" class="">
+                        <div id="GLOBEX_el">
+                            <span>GLOBEX</span>
+                        </div>
+                    </div>
+                    <div id="Cuadrcula_de_repeticin_1_ej_1" class="">
+                        <div id="GLOBEX_en">
+                            <span>GLOBEX</span>
+                        </div>
+                    </div>
+                    <div id="Cuadrcula_de_repeticin_1_ej_2" class="">
+                        <div id="GLOBEX_ep">
+                            <span>GLOBEX</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="Grupo_de_desplazamiento_2">
+                <div id="Grupo_924">
+                    <div id="Cuadrcula_de_repeticin_1_es">
+                        <div id="Cuadrcula_de_repeticin_1_es_0" class="">
+                            <div id="GLOBEX_eu">
+                                <span>GLOBEX</span>
+                            </div>
+                        </div>
+                        <div id="Cuadrcula_de_repeticin_1_es_1" class="">
+                            <div id="GLOBEX_ew">
+                                <span>GLOBEX</span>
+                            </div>
+                        </div>
+                        <div id="Cuadrcula_de_repeticin_1_es_2" class="">
+                            <div id="GLOBEX_ey">
+                                <span>GLOBEX</span>
+                            </div>
+                        </div>
+                        <div id="Cuadrcula_de_repeticin_1_es_3" class="">
+                            <div id="GLOBEX_e">
+                                <span>GLOBEX</span>
+                            </div>
+                        </div>
+                        <div id="Cuadrcula_de_repeticin_1_es_4" class="">
+                            <div id="GLOBEX_fa">
+                                <span>GLOBEX</span>
+                            </div>
+                        </div>
+                        <div id="Cuadrcula_de_repeticin_1_es_5" class="">
+                            <div id="GLOBEX_fb">
+                                <span>GLOBEX</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="Grupo_928">
+                <svg class="Trazado_696_e" viewBox="-14087.823 10866.999 6 38.009">
+			<path id="Trazado_696_e" d="M -14087.8232421875 10866.9990234375 L -14087.8232421875 10905.0078125">
+			</path>
+		</svg>
+                <svg class="Rectngulo_242_e">
+			<rect id="Rectngulo_242_e" rx="12" ry="12" x="0" y="0" width="1363" height="53">
+			</rect>
+		</svg>
+                <div id="Constitucin_Poltica_De_Colombi_e">
+                    <span>Constitucion Politica de Colombia - Derechos Colectivos - Artículos del 72-82</span>
+                </div>
+            </div>
+            <div id="Artculo_78_ARTICULO_78La_ley_r">
+                <span>Artículo 78 ARTICULO 78º—La ley regulará el control de calidad de bienes y servicios ofrecidos y prestados a la comunidad, así como la información que debe suministrarse al público en su comercialización. Serán responsables, de acuerdo con la ley, quienes en la producción y en la comercialización de bienes y servicios, atenten contra la salud, la seguridad y el adecuado aprovisionamiento a consumidores y usuarios. El Estado garantizará la participación de las organizaciones de consumidores y usuarios en el estudio de las disposiciones que les conciernen. Para gozar de este derecho las organizaciones deben ser representativas y observar procedimientos democráticos internos.<br/>Volver al inicio Volver al indice<br/><br/>Artículo 79 ARTICULO 79º—Todas las personas tienen derecho a gozar de un ambiente sano. La ley garantizará la participación de la comunidad en las decisiones que puedan afectarlo. Es deber del Estado proteger la diversidad e integridad del ambiente, conservar las áreas de especial importancia ecológica y fomentar la educación para el logro de estos fines.<br/>Volver al inicio Volver al indice<br/><br/>Artículo 80 ARTICULO 80º—El Estado planificará el manejo y aprovechamiento de los recursos naturales, para garantizar su desarrollo sostenible, su conservación, restauración o sustitución. Además, deberá prevenir y controlar los factores de deterioro ambiental, imponer las sanciones legales y exigir la reparación de los daños causados. Así mismo, cooperará con otras naciones en la protección de los ecosistemas situados en las zonas fronterizas.<br/>Volver al inicio Volver al indice<br/><br/>Artículo 81 ARTICULO 81º—Queda prohibida la fabricación, importación, posesión y uso de armas químicas, biológicas y nucleares, así como la introducción al territorio nacional de residuos nucleares y desechos tóxicos. El Estado regulará el ingreso al país y la salida de él de los recursos genéticos, y su utilización, de acuerdo con el interés nacional.<br/>Volver al inicio Volver al indice<br/><br/>Artículo 82 ARTICULO 82º—Es deber del Estado velar por la protección de la integridad del espacio público y por su destinación al uso común, el cual prevalece sobre el interés particular. Las entidades públicas participarán en la plusvalía que genere su acción urbanística y regularán la utilización del suelo y del espacio aéreo urbano en defensa del interés común.</span>
+            </div>
+            <div id="Grupo_de_desplazamiento_3">
+                <div id="Grupo_929">
+                    <div id="Cuadrcula_de_repeticin_3">
+                        <div id="Cuadrcula_de_repeticin_3_0" class="">
+                            <div id="GLOBEX_fe">
+                                <span>GLOBEX</span>
+                            </div>
+                        </div>
+                        <div id="Cuadrcula_de_repeticin_3_1" class="">
+                            <div id="GLOBEX_fg">
+                                <span>GLOBEX</span>
+                            </div>
+                        </div>
+                        <div id="Cuadrcula_de_repeticin_3_2" class="">
+                            <div id="GLOBEX_fi">
+                                <span>GLOBEX</span>
+                            </div>
+                        </div>
+                        <div id="Cuadrcula_de_repeticin_3_3" class="">
+                            <div id="GLOBEX_fk">
+                                <span>GLOBEX</span>
+                            </div>
+                        </div>
+                        <div id="Cuadrcula_de_repeticin_3_4" class="">
+                            <div id="GLOBEX_fm">
+                                <span>GLOBEX</span>
+                            </div>
+                        </div>
+                        <div id="Cuadrcula_de_repeticin_3_5" class="">
+                            <div id="GLOBEX_fo">
+                                <span>GLOBEX</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="Grupo_de_desplazamiento_4">
+                <div id="Grupo_930">
+                    <div id="Cuadrcula_de_repeticin_4">
+                        <div id="Cuadrcula_de_repeticin_4_0" class="">
+                            <div id="GLOBEX_ft">
+                                <span>GLOBEX</span>
+                            </div>
+                        </div>
+                        <div id="Cuadrcula_de_repeticin_4_1" class="">
+                            <div id="GLOBEX_fv">
+                                <span>GLOBEX</span>
+                            </div>
+                        </div>
+                        <div id="Cuadrcula_de_repeticin_4_2" class="">
+                            <div id="GLOBEX_fx">
+                                <span>GLOBEX</span>
+                            </div>
+                        </div>
+                        <div id="Cuadrcula_de_repeticin_4_3" class="">
+                            <div id="GLOBEX_fz">
+                                <span>GLOBEX</span>
+                            </div>
+                        </div>
+                        <div id="Cuadrcula_de_repeticin_4_4" class="">
+                            <div id="GLOBEX_f">
+                                <span>GLOBEX</span>
+                            </div>
+                        </div>
+                        <div id="Cuadrcula_de_repeticin_4_5" class="">
+                            <div id="GLOBEX_ga">
+                                <span>GLOBEX</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="Grupo_909">
+                <div id="Correo_Electronico__Globexcorp">
+                    <span>Correo Electronico:  Globex@corporationglo.com.co</span>
+                </div>
+            </div>
+            <div id="Grupo_926">
+                <div id="Direccin__calle_80__19-12_-_Bo">
+                    <span>Dirección:  calle 80 # 19-12 - Bogota D.C</span>
+                </div>
+            </div>
+            <div id="Grupo_927">
+                <div id="Telefono_8862898_-_3209870099">
+                    <span>Telefono: 8862898 - 3209870099</span>
+                </div>
+            </div>
+            <img id="Imagen_1_ga" src="Imagen_1_ga.png" srcset="Imagen_1_ga.png 1x, Imagen_1_ga@2x.png 2x">
+
+        </div>
+
+    </body>
+
+    <!--BOTONES DE LA BARRA DE INICIO-->
+
+    <body>
+        <span id="Codigo_de_Etica_del_Ingeniero" onclick="myFunction()">Codigo de Etica del Ingeniero</span>
+
+        <span id="COPNIA" onclick="location.href='https://www.globex2021.com/Pagina_AdobeXD/experimento.php';">COPNIA</span>
+
+        <span id="Ley_1273" onclick="location.href='https://www.globex2021.com/Pagina_AdobeXD/Experimenta/registro.php'">Ley 1273</span>
+
+        <span id="Derechos_Colectivos" onclick="myFunction()">Derechos Colectivos</span>
+
+        <span id="Derechos_Humanos" onclick="myFunction()">Derechos Fundamentales</span>
+    </body>
+
+    <!--BOTONES DE INICIAR SESION DE LA PAGINA PRINCIPAL-->
+
+    <body>
+        <button id="Registrate_" onclick="location.href='https://www.globex2021.com/Pagina_AdobeXD/Registro/Registro.php'"><span>Registrate</span><br></button>
+
+        <button id="Iniciar_sesion" onclick="location.href='https://www.globex2021.com/Pagina_AdobeXD/Diseno_Login/Login.php';"><span>Ingresar</span><br></button>
+
+
+
+    </body>
+
+    <!--<button id="baba" onclick="myFunction">Ley 1273</button>-->
+</body>
+
+</html>

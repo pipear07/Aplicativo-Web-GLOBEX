@@ -1,0 +1,8 @@
+  HORA   USUARIO               MENSAJE                                      DIRECCION IP
+18:50:15  ROOT            INGRESO AL SISTEMA                               181.61.208.27
+18:54:14  ROOT            INGRESO AL SISTEMA                               181.61.208.27
+18:57:06  ROOT            INGRESO AL SISTEMA                               181.61.208.27
+18:58:44  ROOT            INGRESO AL SISTEMA                               181.61.208.27
+19:50:00  LASALCHICHA     USUARIO INGRESO MAL LA CONTRASEÑA O USUARIO     181.61.208.27
+19:53:18  ROBER           USUARIO INGRESO MAL LA CONTRASEÑA O USUARIO     181.61.208.27
+19:58:43  ARLES           INGRESO AL SISTEMA                               181.61.208.27

@@ -1,0 +1,129 @@
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+    }
+input[type=number] { -moz-appearance:textfield; }
+
+html{
+    background: url("background.jpg") no-repeat;
+	background-size: cover;
+    min-height: 100%;
+}
+
+body{
+	background-color: transparent;
+}
+
+h1{
+   text-align: center;
+}
+
+button{
+ margin-left: auto;
+  margin-right: auto;
+}
+
+#registration-form{
+	max-width: 1110px;
+	margin: 120px auto;
+}
+
+#registration-form .image{
+	float:left;
+	background-image: url("desk.jpg");
+	height: 834px;
+	width: 50%;
+	background-size: cover;
+	background-position: 25%;
+}
+
+#registration-form .frm{
+	float:right;
+	height: 1110pxpx;
+    width: 50%;
+    min-width: 250px;
+    padding: 0 35px;
+    background-size: 100% 100%;
+    background-color: white;
+}
+
+#registration-form h1{
+	margin-top: 30px;
+	margin-bottom: 20px;
+}
+
+#registration-form .form-control{
+	width: 90%;
+	padding: 12px 20px;
+	height: auto;
+}
+
+@media screen and (max-width: 700px){
+	#registration-form .image{
+		width: 30%;
+	    background-position: 60%;
+	}
+
+	#registration-form .frm{
+		width: 70%;
+	}
+
+	#registration-form .form-control{
+		width: 100%;
+	}
+}
+
+@media screen and (max-width: 500px){
+	#registration-form .image{
+		display: none;
+	}
+
+	#registration-form .frm{
+		width: 100%;
+	}
+
+	#registration-form h1{
+		text-align: center;
+	}
+
+	#registration-form .btn{
+		width: 100%;
+		margin-top: 20px;
+	}
+}
+
+#leyend_error {
+    border: 1px solid rgb(75, 1, 1);
+    background-color: rgb(168, 40, 40);
+    text-align: left;
+    padding: 0.5em 3em;
+    margin-top: 1em;
+    color: white;
+    font-size: 1.5em;
+}
+#error_{
+    border: 1px solid rgb(75, 1, 1);
+    background-color: rgb(168, 40, 40);
+    text-align: right;
+    padding: 0.5em 3em;
+    margin-top: 1em;
+    color: white;
+    font-size: 1.5em;
+    position: absolute;
+    top: 1140px;
+    left: 680px;
+
+}
+
+#titulo_loggeo{
+    text-align: center;
+    position: relative;
+    left: 150px;
+}
+
+#registrar{
+    text-align: center;
+    position: relative;
+    left: 150px;
+}
